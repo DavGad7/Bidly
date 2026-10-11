@@ -28,6 +28,7 @@ public class AuctionEventProducer {
             context.createProducer().send(queue, message);
             LOG.log(Level.FINE, "Sent JMS event: {0}", event);
         } catch (Exception e) {
+            // a notification failing shouldn't cancel the bid itself
             LOG.log(Level.SEVERE, "Failed to send JMS event: " + event, e);
         }
     }

@@ -43,7 +43,7 @@
                                      alt="#{auctionDetailBean.auction.title}"
                                      class="gallery-main"/>
 
-                                <!-- thumbnails -->
+                                <!-- Clicking a thumbnail swaps it into the big image above -->
                                 <div class="gallery-thumbnails">
                                     <ui:repeat value="#{auctionDetailBean.photos}" var="photo">
                                         <img src="#{request.contextPath}/image?id=#{photo.id}"
@@ -278,7 +278,7 @@
                                                      styleClass="btn btn-success w-100 mb-3"/>
                                 </h:form>
 
-                                <!-- auto bid -->
+                                <!-- Auto bid: show the form only if this user has no active auto bid yet -->
                                 <div class="border-top pt-3">
                                     <h6><i class="bi bi-robot"></i> Auto-Bid (Proxy Bidding)</h6>
                                     <ui:fragment rendered="#{auctionDetailBean.existingAutoBid == null or not auctionDetailBean.existingAutoBid.active}">

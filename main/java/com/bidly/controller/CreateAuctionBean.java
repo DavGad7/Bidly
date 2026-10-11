@@ -1,9 +1,9 @@
 package com.bidly.controller;
 
+import com.bidly.dao.CategoryDao;
 import com.bidly.model.Auction;
 import com.bidly.model.Category;
 import com.bidly.service.AuctionService;
-import com.bidly.service.CategoryService;
 import com.bidly.service.PhotoService;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
@@ -43,7 +43,7 @@ public class CreateAuctionBean implements Serializable {
     private AuctionService auctionService;
 
     @EJB
-    private CategoryService categoryService;
+    private CategoryDao categoryDao;
 
     @EJB
     private PhotoService photoService;
@@ -68,7 +68,7 @@ public class CreateAuctionBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        categories = categoryService.getAllCategories();
+        categories = categoryDao.findAll();
     }
 
     public String createAuction() {
@@ -100,6 +100,7 @@ public class CreateAuctionBean implements Serializable {
             return null;
         }
 
+        // no date/time picked -> use the default duration
         LocalDateTime end;
         try {
             if (endDateStr != null && !endDateStr.isBlank()
@@ -149,7 +150,7 @@ public class CreateAuctionBean implements Serializable {
             auction.setStartPrice(startPrice);
             auction.setBuyNowPrice(buyNowPrice);
             auction.setEndTime(end);
-            auction.setCategory(categoryService.getCategory(categoryId));
+            auction.setCategory(categoryDao.findById(categoryId));
             if (contactInfo != null && !contactInfo.isBlank()) {
                 auction.setContactInfo(contactInfo.trim());
             }
@@ -168,6 +169,9 @@ public class CreateAuctionBean implements Serializable {
         }
     }
 
+    // Checks both the file extension and the MIME type the browser sent.
+    // SVG is not allowed on purpose since it can have <script> in it and ImageServlet
+    // serves the photos from our own domain.
     private static boolean isAllowedImage(Part part) {
         String fileName = part.getSubmittedFileName();
         if (fileName == null || fileName.isBlank()) {

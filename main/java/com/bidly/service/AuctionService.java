@@ -3,7 +3,6 @@ package com.bidly.service;
 import com.bidly.dao.AuctionDao;
 import com.bidly.dao.BidDao;
 import com.bidly.dao.UserDao;
-import com.bidly.interceptor.Logged;
 import com.bidly.model.Auction;
 import com.bidly.model.Auction.SuspendedBy;
 import com.bidly.model.AuctionStatus;

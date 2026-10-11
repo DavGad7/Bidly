@@ -70,7 +70,6 @@
             </h:form>
         </div>
 
-        <!-- auction cards -->
         <div class="row g-4">
             <ui:repeat value="#{homeBean.auctions}" var="auction">
                 <div class="col-sm-6 col-md-4 col-lg-3">
@@ -136,7 +135,7 @@
             </div>
         </ui:fragment>
 
-        <!-- paging -->
+        <!-- 12 per page (HomeBean.PAGE_SIZE) -->
         <ui:fragment rendered="#{homeBean.totalPages > 1}">
             <div class="d-flex justify-content-center mt-4">
                 <h:form>

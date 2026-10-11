@@ -2,7 +2,6 @@ package com.bidly.service;
 
 import com.bidly.dao.AuctionDao;
 import com.bidly.dao.BidDao;
-import com.bidly.interceptor.Logged;
 import com.bidly.jms.AuctionEventProducer;
 import com.bidly.model.Auction;
 import com.bidly.model.AuctionStatus;
@@ -40,6 +39,7 @@ public class AuctionCloseService {
         LOG.info("AuctionCloseService started - checking expired auctions periodically");
     }
 
+    // not persistent - otherwise after a restart the server tries to run all the missed timers
     @Schedule(minute = "*/1", hour = "*", persistent = false)
     public void closeExpiredAuctions() {
         LocalDateTime now = LocalDateTime.now();

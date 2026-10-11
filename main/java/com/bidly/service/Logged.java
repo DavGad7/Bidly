@@ -1,4 +1,4 @@
-package com.bidly.interceptor;
+package com.bidly.service;
 
 import jakarta.interceptor.InterceptorBinding;
 import java.lang.annotation.ElementType;

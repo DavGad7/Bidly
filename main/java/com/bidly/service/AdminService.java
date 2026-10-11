@@ -3,7 +3,6 @@ package com.bidly.service;
 import com.bidly.dao.AuctionDao;
 import com.bidly.dao.BidDao;
 import com.bidly.dao.UserDao;
-import com.bidly.interceptor.Logged;
 import com.bidly.model.Auction;
 import com.bidly.model.AuctionStatus;
 import com.bidly.model.User;
@@ -51,11 +50,10 @@ public class AdminService {
     }
 
     public String exportUserAuctionsCsv(String userId) {
-        List<Auction> auctions = auctionDao.findBySeller(userId);
         StringBuilder sb = new StringBuilder();
         sb.append("Title,Status,Category,Start Price,Current Price,Winner,Start Time,End Time\n");
 
-        for (Auction a : auctions) {
+        for (Auction a : auctionDao.findBySeller(userId)) {
             String category = (a.getCategory() != null) ? a.getCategory().getName() : "";
             String winner = (a.getWinner() != null) ? a.getWinner().getDisplayName() : "";
 

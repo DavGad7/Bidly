@@ -11,6 +11,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
+/**
+ * Runs on every page. If an admin blocks (or deletes) a user while they are logged in,
+ * this kicks them out on their next request instead of waiting for the session to expire.
+ */
 public class BlockedUserFilter implements Filter {
 
     @EJB

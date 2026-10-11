@@ -3,7 +3,6 @@ package com.bidly.service;
 import com.bidly.dao.AuctionDao;
 import com.bidly.dao.AuctionPhotoDao;
 import com.bidly.dao.UserDao;
-import com.bidly.interceptor.Logged;
 import com.bidly.model.Auction;
 import com.bidly.model.AuctionPhoto;
 import com.bidly.model.User;
@@ -55,6 +54,7 @@ public class PhotoService {
                         data, contentType, fileName, position, isPrimary, auction);
                 photoDao.save(photo);
 
+                // first photo is the thumbnail unless the user picked a different main photo
                 if (isPrimary || thumbId == null) {
                     thumbId = photo.getId();
                 }
@@ -135,7 +135,7 @@ public class PhotoService {
                 if (token.trim().startsWith("filename")) {
                     String name = token.substring(token.indexOf('=') + 1).trim()
                                        .replace("\"", "");
-                    // can be a full windows path
+                    // old IE sends the full path from the user's computer, not just the file name
                     int slash = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\'));
                     if (slash >= 0) {
                         name = name.substring(slash + 1);

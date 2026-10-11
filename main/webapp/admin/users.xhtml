@@ -93,7 +93,7 @@
                                     </td>
                                     <td class="small text-muted"><h:outputText value="#{user.createdAt}"><f:convertDateTime type="localDateTime" pattern="MMM d, yyyy"/></h:outputText></td>
                                     <td>
-                                        <!-- can't block admins -->
+                                        <!-- No block button for admin accounts -->
                                         <ui:fragment rendered="#{user.role != 'ADMIN'}">
                                             <div class="d-flex gap-1">
                                                 <ui:fragment rendered="#{not user.blocked}">

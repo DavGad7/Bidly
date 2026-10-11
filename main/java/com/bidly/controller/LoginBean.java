@@ -53,6 +53,7 @@ public class LoginBean {
 
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         String redirectUrl = (String) ec.getSessionMap().remove("redirectUrl");
+        // go back to the page AuthFilter saved, but only relative URLs (no redirect to other sites)
         if (redirectUrl != null && !redirectUrl.isBlank() && !redirectUrl.contains("://")) {
             try {
                 ec.redirect(redirectUrl);

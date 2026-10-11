@@ -5,7 +5,6 @@ import com.bidly.dao.AutoBidDao;
 import com.bidly.dao.BidDao;
 import com.bidly.dao.BidIncrementDao;
 import com.bidly.dao.UserDao;
-import com.bidly.interceptor.Logged;
 import com.bidly.jms.AuctionEventProducer;
 import com.bidly.model.*;
 import jakarta.ejb.EJB;
@@ -23,16 +22,12 @@ public class AutoBidService {
 
     @EJB
     private AutoBidDao autoBidDao;
-
     @EJB
     private BidDao bidDao;
-
     @EJB
     private AuctionDao auctionDao;
-
     @EJB
     private BidIncrementDao bidIncrementDao;
-
     @EJB
     private UserDao userDao;
 
@@ -82,7 +77,11 @@ public class AutoBidService {
         return autoBidDao.findByAuctionAndBidder(auctionId, userId);
     }
 
-    // max one auto bid per call
+    /**
+     * Proxy bidding. Called after every normal bid and when someone sets an auto bid.
+     * Places at most one automatic bid per call: the strongest auto bidder goes one
+     * increment above the second highest max (or less if their own max is lower).
+     */
     public void processAutoBids(Auction auction) {
         auction = auctionDao.findById(auction.getId());
         if (auction == null || auction.getStatus() != AuctionStatus.ACTIVE) {
@@ -104,6 +103,7 @@ public class AutoBidService {
         AutoBid topChallenger = null;
         AutoBid otherChallenger = null;
 
+        // the query sorts by maxAmount desc, so the first challengers we find are the strongest
         for (AutoBid ab : active) {
             if (ab.getBidder().isBlocked()) {
                 continue;
@@ -126,7 +126,8 @@ public class AutoBidService {
         AutoBid winning;
         BigDecimal secondPrice;
 
-        // 2nd price, like ebay
+        // If the leader has an auto bid that covers the best challenger they just stay on top.
+        // On a tie the leader wins because they got there first.
         if (leaderBid != null && leaderBid.getMaxAmount().compareTo(topChallenger.getMaxAmount()) >= 0) {
             winning = leaderBid;
             secondPrice = topChallenger.getMaxAmount();
@@ -149,7 +150,7 @@ public class AutoBidService {
             newPrice = minNextBid;
         }
 
-        // same as buy now in BidService
+        // Same buy now rule as BidService.placeBid
         boolean hitBuyNow = auction.hasBuyNow() && newPrice.compareTo(auction.getBuyNowPrice()) >= 0;
         if (hitBuyNow) {
             newPrice = auction.getBuyNowPrice();

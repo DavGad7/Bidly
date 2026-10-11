@@ -291,6 +291,7 @@ public class Auction implements Serializable {
 
     @Override
     public int hashCode() {
+        // constant on purpose: id is still null before persist, so it can't be used here
         return getClass().hashCode();
     }
 

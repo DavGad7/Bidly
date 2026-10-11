@@ -1,4 +1,4 @@
-package com.bidly.interceptor;
+package com.bidly.service;
 
 import jakarta.annotation.Priority;
 import jakarta.interceptor.AroundInvoke;

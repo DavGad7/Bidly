@@ -51,6 +51,7 @@ public class ImageServlet extends HttpServlet {
         }
 
         String contentType = photo.getContentType();
+        // don't send whatever type is stored in the DB, anything unexpected goes out as jpeg
         if (contentType == null || !SAFE_IMAGE_TYPES.contains(contentType.toLowerCase())) {
             contentType = "image/jpeg";
         }

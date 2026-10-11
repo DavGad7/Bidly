@@ -2,7 +2,6 @@ package com.bidly.service;
 
 import com.bidly.dao.*;
 import com.bidly.model.*;
-import com.bidly.util.PasswordUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
@@ -21,24 +20,20 @@ public class DataInitializer {
 
     @EJB
     private CategoryDao categoryDao;
-
     @EJB
     private BidIncrementDao bidIncrementDao;
-
     @EJB
     private UserDao userDao;
-
     @EJB
     private AuctionDao auctionDao;
-
     @EJB
     private AuctionPhotoDao auctionPhotoDao;
-
     @EJB
     private BidDao bidDao;
 
     @PostConstruct
     public void init() {
+        // H2 runs in file mode so the data survives a restart, only seed an empty DB
         if (!categoryDao.findAll().isEmpty()) {
             LOG.info("Database already seeded, skipping DataInitializer.");
             return;
@@ -49,8 +44,8 @@ public class DataInitializer {
         seedCategories();
         seedBidIncrements();
         seedAdminUser();
-        User[] sampleUsers = seedSampleUsers();
-        seedSampleAuctions(sampleUsers);
+        User[] users = seedSampleUsers();
+        seedSampleAuctions(users);
 
         LOG.info("Seed data initialized successfully.");
     }
@@ -74,6 +69,7 @@ public class DataInitializer {
         LOG.info("Seeded " + cats.length + " categories.");
     }
 
+    // Price ranges and their bid step. Last one has no upper limit.
     private void seedBidIncrements() {
         bidIncrementDao.save(new BidIncrement(bd("0.01"), bd("9.99"), bd("0.50")));
         bidIncrementDao.save(new BidIncrement(bd("10.00"), bd("49.99"), bd("1.00")));
@@ -104,7 +100,7 @@ public class DataInitializer {
 
     private User newUser(String username, String email, String password,
                          String firstName, String lastName, int daysAgo) {
-        User user = new User(username, email, PasswordUtil.hash(password), firstName, lastName);
+        User user = new User(username, email, UserService.hashPassword(password), firstName, lastName);
         user.setCreatedAt(LocalDateTime.now().minusDays(daysAgo));
         return user;
     }

@@ -4,7 +4,6 @@ import com.bidly.dao.AuctionDao;
 import com.bidly.dao.BidDao;
 import com.bidly.dao.BidIncrementDao;
 import com.bidly.dao.UserDao;
-import com.bidly.interceptor.Logged;
 import com.bidly.jms.AuctionEventProducer;
 import com.bidly.model.*;
 import jakarta.ejb.EJB;
@@ -48,7 +47,8 @@ public class BidService {
         User bidder = userDao.findById(bidderId);
         if (bidder == null) throw new IllegalArgumentException("User not found.");
 
-        // timer runs every min, could still be ACTIVE after the end time
+        // AuctionCloseService only runs once a minute, so an auction can still be ACTIVE
+        // for a bit after its end time. That's why isExpired() is checked as well.
         if (auction.getStatus() != AuctionStatus.ACTIVE) {
             throw new IllegalStateException("This auction is no longer active.");
         }
@@ -73,13 +73,14 @@ public class BidService {
                     " + $" + step.toPlainString() + " increment).");
         }
 
+        // Bidding the buy now price (or more) just buys the item, and they pay the buy now price.
         boolean isBuyNow = auction.hasBuyNow()
                 && amount.compareTo(auction.getBuyNowPrice()) >= 0;
         if (isBuyNow) {
             amount = auction.getBuyNowPrice();
         }
 
-        // old leader before saving!
+        // Need the leader from BEFORE this bid, after save() findHighestBid would return the new one
         Bid prevTop = bidDao.findHighestBid(auctionId);
         String prevLeaderId = prevTop != null ? prevTop.getBidder().getId() : null;
 

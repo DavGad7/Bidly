@@ -2,7 +2,6 @@ package com.bidly.service;
 
 import com.bidly.dao.NotificationDao;
 import com.bidly.dao.UserDao;
-import com.bidly.interceptor.Logged;
 import com.bidly.model.Notification;
 import com.bidly.model.NotificationType;
 import com.bidly.model.User;

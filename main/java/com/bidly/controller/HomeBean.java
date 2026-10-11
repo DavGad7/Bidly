@@ -1,9 +1,9 @@
 package com.bidly.controller;
 
+import com.bidly.dao.CategoryDao;
 import com.bidly.model.Auction;
 import com.bidly.model.Category;
 import com.bidly.service.AuctionService;
-import com.bidly.service.CategoryService;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.faces.context.FacesContext;
@@ -18,14 +18,13 @@ import java.util.List;
 public class HomeBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     private static final int PAGE_SIZE = 12;
 
     @EJB
     private AuctionService auctionService;
 
     @EJB
-    private CategoryService categoryService;
+    private CategoryDao categoryDao;
 
     @Inject
     private NavigationBean navigationBean;
@@ -41,7 +40,7 @@ public class HomeBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        categories = categoryService.getAllCategories();
+        categories = categoryDao.findAll();
         search();
     }
 
@@ -133,15 +132,7 @@ public class HomeBean implements Serializable {
         this.sortBy = sortBy;
     }
 
-    public int getCurrentPage() {
-        return currentPage;
-    }
-
-    public int getTotalPages() {
-        return totalPages;
-    }
-
-    public long getTotalResults() {
-        return totalResults;
-    }
+    public int getCurrentPage() { return currentPage; }
+    public int getTotalPages() { return totalPages; }
+    public long getTotalResults() { return totalResults; }
 }

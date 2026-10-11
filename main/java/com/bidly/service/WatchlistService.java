@@ -3,7 +3,6 @@ package com.bidly.service;
 import com.bidly.dao.AuctionDao;
 import com.bidly.dao.UserDao;
 import com.bidly.dao.WatchlistDao;
-import com.bidly.interceptor.Logged;
 import com.bidly.model.Auction;
 import com.bidly.model.User;
 import com.bidly.model.WatchlistEntry;

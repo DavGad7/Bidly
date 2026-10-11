@@ -3,16 +3,15 @@ package com.bidly.service;
 import com.bidly.dao.AuctionDao;
 import com.bidly.dao.BidDao;
 import com.bidly.dao.UserDao;
-import com.bidly.interceptor.Logged;
 import com.bidly.model.Auction;
 import com.bidly.model.AuctionStatus;
 import com.bidly.model.Bid;
 import com.bidly.model.User;
 import com.bidly.model.UserRole;
-import com.bidly.util.PasswordUtil;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import java.time.LocalDateTime;
+import org.mindrot.jbcrypt.BCrypt;
 
 @Stateless
 @Logged
@@ -42,7 +41,7 @@ public class UserService {
             throw new IllegalArgumentException("Email '" + email + "' is already registered.");
         }
 
-        User user = new User(username, email, PasswordUtil.hash(password), firstName, lastName);
+        User user = new User(username, email, hashPassword(password), firstName, lastName);
         user.setCreatedAt(LocalDateTime.now());
         userDao.save(user);
         return user;
@@ -51,7 +50,7 @@ public class UserService {
     public User login(String username, String password) {
         User user = userDao.findByUsername(username);
         if (user == null) return null;
-        if (!PasswordUtil.verify(password, user.getPasswordHash())) return null;
+        if (!BCrypt.checkpw(password, user.getPasswordHash())) return null;
         if (user.isBlocked()) throw new AccountBlockedException(user.getBlockReason());
         return user;
     }
@@ -89,11 +88,11 @@ public class UserService {
         }
         checkPassword(newPassword);
 
-        if (!PasswordUtil.verify(oldPassword, user.getPasswordHash())) {
+        if (!BCrypt.checkpw(oldPassword, user.getPasswordHash())) {
             throw new IllegalArgumentException("Current password is incorrect.");
         }
 
-        user.setPasswordHash(PasswordUtil.hash(newPassword));
+        user.setPasswordHash(hashPassword(newPassword));
         userDao.update(user);
     }
 
@@ -146,7 +145,8 @@ public class UserService {
         user.setBlockReason(null);
         userDao.update(user);
 
-        // resume only the auctions that were suspended by the block
+        // Only reactivate what blockUser() suspended. If the seller or an admin suspended
+        // an auction on their own it stays suspended.
         for (Auction auction : auctionDao.findBySeller(userId)) {
             if (auction.getStatus() == AuctionStatus.SUSPENDED
                     && auction.getSuspendedBy() == Auction.SuspendedBy.BLOCK) {
@@ -159,7 +159,10 @@ public class UserService {
         recalcPrices(userId);
     }
 
-    // flush first - the bid queries check USERS.BLOCKED in the db, not in memory
+    /*
+     * Bids from blocked users are filtered in JPQL (b.bidder.blocked = false), so the query reads
+     * the column from the database. Flushing first makes sure it sees the change we just made.
+     */
     private void recalcPrices(String userId) {
         userDao.flush();
         for (Auction auction : auctionDao.findOpenWithBidsFrom(userId)) {
@@ -167,6 +170,10 @@ public class UserService {
             auction.setCurrentPrice(top != null ? top.getAmount() : auction.getStartPrice());
             auctionDao.update(auction);
         }
+    }
+
+    static String hashPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt(12));
     }
 
     static String cleanReason(String reason) {
@@ -182,6 +189,7 @@ public class UserService {
         }
     }
 
+    // reputation = items sold (closed with a winner) + auctions won
     public int getReputation(String userId) {
         int sales = 0;
         for (Auction a : auctionDao.findBySeller(userId)) {
