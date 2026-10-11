@@ -57,7 +57,7 @@ public class Bid implements Serializable {
         this.automaticBid = automaticBid;
     }
 
-    // masked username for bid history
+    // for the bid history, e.g. "y***3"
     public String getAnonymousDisplayName() {
         if (bidder == null || bidder.getUsername() == null) {
             return "User ***";

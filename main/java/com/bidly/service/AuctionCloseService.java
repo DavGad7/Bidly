@@ -59,10 +59,6 @@ public class AuctionCloseService {
         }
     }
 
-    /**
-     * Closes an active auction and sets the highest bidder as winner.
-     * Does nothing if the auction is not active.
-     */
     public void closeAuction(Long auctionId) {
         Auction auction = auctionDao.findById(auctionId);
         if (auction == null || auction.getStatus() != AuctionStatus.ACTIVE) {

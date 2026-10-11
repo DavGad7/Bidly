@@ -53,7 +53,7 @@ public class LoginBean {
 
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         String redirectUrl = (String) ec.getSessionMap().remove("redirectUrl");
-        // relative URLs only
+        // relative urls only
         if (redirectUrl != null && !redirectUrl.isBlank() && !redirectUrl.contains("://")) {
             try {
                 ec.redirect(redirectUrl);

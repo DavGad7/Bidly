@@ -43,7 +43,7 @@ public class AuctionEventMDB implements MessageListener {
             LOG.log(Level.FINE, "Notification created for user {0}: {1}",
                     new Object[]{event.getTargetUserId(), title});
         } catch (Exception e) {
-            // no rethrow (avoids redelivery)
+            // Don't rethrow here. The container would just keep redelivering the message.
             LOG.log(Level.SEVERE, "Error processing JMS message", e);
         }
     }

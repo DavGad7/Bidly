@@ -78,9 +78,9 @@ public class AutoBidService {
     }
 
     /**
-     * Runs proxy bidding for the auction. Places at most one automatic bid per call.
-     *
-     * @param auction the auction, reloaded from the database
+     * Proxy bidding, called after every normal bid and when someone sets an auto bid.
+     * Places at most one bid per call: the best auto bidder goes 1 increment over
+     * the 2nd highest max (capped at their own max).
      */
     public void processAutoBids(Auction auction) {
         auction = auctionDao.findById(auction.getId());
@@ -103,7 +103,7 @@ public class AutoBidService {
         AutoBid topChallenger = null;
         AutoBid otherChallenger = null;
 
-        // sorted by maxAmount desc
+        // query is sorted by maxAmount desc
         for (AutoBid ab : active) {
             if (ab.getBidder().isBlocked()) {
                 continue;
@@ -126,7 +126,7 @@ public class AutoBidService {
         AutoBid winning;
         BigDecimal secondPrice;
 
-        // leader keeps the lead on a tie
+        // leader stays on top if their max covers it (ties go to the leader)
         if (leaderBid != null && leaderBid.getMaxAmount().compareTo(topChallenger.getMaxAmount()) >= 0) {
             winning = leaderBid;
             secondPrice = topChallenger.getMaxAmount();

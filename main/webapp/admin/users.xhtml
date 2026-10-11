@@ -8,125 +8,125 @@
 
 <ui:composition template="/templates/layout.xhtml">
 
-  <ui:define name="title">User Management - Bidly</ui:define>
+    <ui:define name="title">User Management - Bidly</ui:define>
 
-  <ui:define name="content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h3><i class="bi bi-people"></i> User Management</h3>
-      <h:link outcome="/admin/dashboard" styleClass="btn btn-outline-secondary btn-sm">
-        <i class="bi bi-arrow-left"></i> Back to Dashboard
-      </h:link>
-    </div>
+    <ui:define name="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3><i class="bi bi-people"></i> User Management</h3>
+            <h:link outcome="/admin/dashboard" styleClass="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </h:link>
+        </div>
 
-    <ui:fragment rendered="#{adminBean.errorMessage != null}">
-      <div class="alert alert-danger">#{adminBean.errorMessage}</div>
-    </ui:fragment>
-    <ui:fragment rendered="#{adminBean.successMessage != null}">
-      <div class="alert alert-success">#{adminBean.successMessage}</div>
-    </ui:fragment>
+        <ui:fragment rendered="#{adminBean.errorMessage != null}">
+            <div class="alert alert-danger">#{adminBean.errorMessage}</div>
+        </ui:fragment>
+        <ui:fragment rendered="#{adminBean.successMessage != null}">
+            <div class="alert alert-success">#{adminBean.successMessage}</div>
+        </ui:fragment>
 
-    <div class="card shadow-sm mb-4">
-      <div class="card-body">
-        <h:form styleClass="row g-3 align-items-end">
-          <div class="col-md-8">
-            <label class="form-label">Search Users</label>
-            <h:inputText value="#{adminBean.userSearchKeyword}"
-                         styleClass="form-control"
-                         p:placeholder="Search by username, email, or name..."/>
-          </div>
-          <div class="col-md-4">
-            <h:commandButton value="Search"
-                             action="#{adminBean.searchUsers}"
-                             styleClass="btn btn-primary me-2"/>
-            <h:commandButton value="Clear"
-                             action="#{adminBean.clearUserSearch}"
-                             styleClass="btn btn-outline-secondary"/>
-          </div>
-        </h:form>
-      </div>
-    </div>
-
-    <div class="card shadow-sm">
-      <div class="card-body p-0">
-        <h:form id="usersForm" styleClass="table-responsive">
-          <table class="table table-hover mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Registered</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <ui:repeat value="#{adminBean.filteredUsers}" var="user">
-                <tr>
-                  <td>#{user.id}</td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-circle avatar-circle-small me-2">
-                        #{user.avatarInitials}
-                      </div>
-                      <h:link outcome="/profile" value="#{user.username}">
-                        <f:param name="userId" value="#{user.id}"/>
-                      </h:link>
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h:form styleClass="row g-3 align-items-end">
+                    <div class="col-md-8">
+                        <label class="form-label">Search Users</label>
+                        <h:inputText value="#{adminBean.userSearchKeyword}"
+                                     styleClass="form-control"
+                                     p:placeholder="Search by username, email, or name..."/>
                     </div>
-                  </td>
-                  <td>#{user.email}</td>
-                  <td>#{user.displayName}</td>
-                  <td>
-                    <span class="badge #{user.role == 'ADMIN' ? 'bg-danger' : 'bg-info'}">
-                      #{user.role}
-                    </span>
-                  </td>
-                  <td>
-                    <span class="badge #{user.blocked ? 'bg-danger' : 'bg-success'}">
-                      #{user.blocked ? 'Blocked' : 'Active'}
-                    </span>
-                    <ui:fragment rendered="#{user.blocked and user.blockReason != null}">
-                      <div class="small fst-italic">"#{user.blockReason}"</div>
-                    </ui:fragment>
-                  </td>
-                  <td class="small text-muted"><h:outputText value="#{user.createdAt}"><f:convertDateTime type="localDateTime" pattern="MMM d, yyyy"/></h:outputText></td>
-                  <td>
-                    <ui:fragment rendered="#{user.role != 'ADMIN'}">
-                      <div class="d-flex gap-1">
-                        <ui:fragment rendered="#{not user.blocked}">
-                          <h:inputText value="#{adminBean.blockReasons[user.id]}"
-                                       styleClass="form-control form-control-sm" style="min-width: 150px"
-                                       maxlength="500" p:placeholder="Reason (user sees this)"/>
-                          <h:commandButton value="Block"
-                                           action="#{adminBean.blockUser(user.id)}"
-                                           styleClass="btn btn-outline-danger btn-sm"
-                                           onclick="return confirm('Block this user?')"/>
-                        </ui:fragment>
-                        <ui:fragment rendered="#{user.blocked}">
-                          <h:commandButton value="Unblock"
-                                           action="#{adminBean.unblockUser(user.id)}"
-                                           styleClass="btn btn-outline-success btn-sm"/>
-                        </ui:fragment>
-                      </div>
-                    </ui:fragment>
-                  </td>
-                </tr>
-              </ui:repeat>
-            </tbody>
-          </table>
-        </h:form>
-      </div>
-    </div>
+                    <div class="col-md-4">
+                        <h:commandButton value="Search"
+                                         action="#{adminBean.searchUsers}"
+                                         styleClass="btn btn-primary me-2"/>
+                        <h:commandButton value="Clear"
+                                         action="#{adminBean.clearUserSearch}"
+                                         styleClass="btn btn-outline-secondary"/>
+                    </div>
+                </h:form>
+            </div>
+        </div>
 
-    <ui:fragment rendered="#{empty adminBean.filteredUsers}">
-      <div class="text-center text-muted py-5">
-        <i class="bi bi-people" style="font-size: 3rem;"></i>
-        <p class="mt-2">No users found.</p>
-      </div>
-    </ui:fragment>
-  </ui:define>
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <h:form id="usersForm" styleClass="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Registered</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ui:repeat value="#{adminBean.filteredUsers}" var="user">
+                                <tr>
+                                    <td>#{user.id}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle avatar-circle-small me-2">
+                                                #{user.avatarInitials}
+                                            </div>
+                                            <h:link outcome="/profile" value="#{user.username}">
+                                                <f:param name="userId" value="#{user.id}"/>
+                                            </h:link>
+                                        </div>
+                                    </td>
+                                    <td>#{user.email}</td>
+                                    <td>#{user.displayName}</td>
+                                    <td>
+                                        <span class="badge #{user.role == 'ADMIN' ? 'bg-danger' : 'bg-info'}">
+                                            #{user.role}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge #{user.blocked ? 'bg-danger' : 'bg-success'}">
+                                            #{user.blocked ? 'Blocked' : 'Active'}
+                                        </span>
+                                        <ui:fragment rendered="#{user.blocked and user.blockReason != null}">
+                                            <div class="small fst-italic">"#{user.blockReason}"</div>
+                                        </ui:fragment>
+                                    </td>
+                                    <td class="small text-muted"><h:outputText value="#{user.createdAt}"><f:convertDateTime type="localDateTime" pattern="MMM d, yyyy"/></h:outputText></td>
+                                    <td>
+                                        <ui:fragment rendered="#{user.role != 'ADMIN'}">
+                                            <div class="d-flex gap-1">
+                                                <ui:fragment rendered="#{not user.blocked}">
+                                                    <h:inputText value="#{adminBean.blockReasons[user.id]}"
+                                                                 styleClass="form-control form-control-sm" style="min-width: 150px"
+                                                                 maxlength="500" p:placeholder="Reason (user sees this)"/>
+                                                    <h:commandButton value="Block"
+                                                                     action="#{adminBean.blockUser(user.id)}"
+                                                                     styleClass="btn btn-outline-danger btn-sm"
+                                                                     onclick="return confirm('Block this user?')"/>
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{user.blocked}">
+                                                    <h:commandButton value="Unblock"
+                                                                     action="#{adminBean.unblockUser(user.id)}"
+                                                                     styleClass="btn btn-outline-success btn-sm"/>
+                                                </ui:fragment>
+                                            </div>
+                                        </ui:fragment>
+                                    </td>
+                                </tr>
+                            </ui:repeat>
+                        </tbody>
+                    </table>
+                </h:form>
+            </div>
+        </div>
+
+        <ui:fragment rendered="#{empty adminBean.filteredUsers}">
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-people" style="font-size: 3rem;"></i>
+                <p class="mt-2">No users found.</p>
+            </div>
+        </ui:fragment>
+    </ui:define>
 
 </ui:composition>
 
