@@ -168,7 +168,9 @@ public class CreateAuctionBean implements Serializable {
         }
     }
 
-    // Extension AND mime type have to match. No SVG, it can contain scripts.
+    /**
+     * Checks the file extension and MIME type against the allowed image types (no SVG).
+     */
     private static boolean isAllowedImage(Part part) {
         String fileName = part.getSubmittedFileName();
         if (fileName == null || fileName.isBlank()) {

@@ -30,6 +30,11 @@ public class PhotoService {
     @EJB
     private UserDao userDao;
 
+    /**
+     * Saves uploaded photos for an auction and sets the thumbnail.
+     *
+     * @param primaryIndex index of the photo selected as main photo
+     */
     public void savePhotos(Long auctionId, List<Part> parts, int primaryIndex) {
         Auction auction = auctionDao.findById(auctionId);
         if (auction == null) {
@@ -134,7 +139,7 @@ public class PhotoService {
                 if (token.trim().startsWith("filename")) {
                     String name = token.substring(token.indexOf('=') + 1).trim()
                                        .replace("\"", "");
-                    // old IE sends the full path
+                    // strip path
                     int slash = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\'));
                     if (slash >= 0) {
                         name = name.substring(slash + 1);

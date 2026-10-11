@@ -116,6 +116,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Blocks a user and suspends their active auctions.
+     *
+     * @throws SecurityException if the caller is not an admin
+     */
     public void blockUser(String userId, String callerId, String reason) {
         requireAdmin(callerId);
         User user = userDao.findById(userId);
@@ -145,7 +150,7 @@ public class UserService {
         user.setBlockReason(null);
         userDao.update(user);
 
-        // Only reactivate what blockUser() suspended, not auctions suspended for other reasons.
+        // resume only auctions suspended by the block
         for (Auction auction : auctionDao.findBySeller(userId)) {
             if (auction.getStatus() == AuctionStatus.SUSPENDED
                     && auction.getSuspendedBy() == Auction.SuspendedBy.BLOCK) {
@@ -159,7 +164,7 @@ public class UserService {
     }
 
     private void recalcPrices(String userId) {
-        // flush first so the query sees the blocked flag
+        // flush before querying
         userDao.flush();
         for (Auction auction : auctionDao.findOpenWithBidsFrom(userId)) {
             Bid top = bidDao.findHighestBid(auction.getId());

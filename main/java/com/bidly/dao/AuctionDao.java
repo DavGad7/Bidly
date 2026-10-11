@@ -45,7 +45,7 @@ public class AuctionDao {
     public List<Auction> search(String keyword, Long categoryId,
                                 String sortBy, int page, int pageSize) {
         StringBuilder jpql = new StringBuilder(
-                // endTime check too, the timer might not have closed it yet
+                // also filter by end time
                 "SELECT a FROM Auction a WHERE a.status = :status AND a.endTime > :now"
                 + " AND a.seller.blocked = false");
 
@@ -151,7 +151,7 @@ public class AuctionDao {
     public void delete(Auction auction) {
         Auction managed = em.find(Auction.class, auction.getId());
         if (managed == null) return;
-        // Delete bids, auto bids and watchlist rows first, they aren't cascaded (FK errors otherwise)
+        // delete dependent rows first (no cascade)
         em.createQuery("DELETE FROM Bid b WHERE b.auction.id = :id")
           .setParameter("id", managed.getId())
           .executeUpdate();

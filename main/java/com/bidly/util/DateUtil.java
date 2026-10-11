@@ -18,7 +18,9 @@ public final class DateUtil {
         return dt.format(DATETIME_FMT);
     }
 
-    // "3d 4h", "2h 15m" or "45m"
+    /**
+     * Time left until endTime, e.g. "3d 4h", "2h 15m" or "45m".
+     */
     public static String formatTimeRemaining(LocalDateTime endTime) {
         if (endTime == null) {
             return "";

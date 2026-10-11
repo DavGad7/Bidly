@@ -38,6 +38,16 @@ public class BidService {
     @EJB
     private AuctionEventProducer eventProducer;
 
+    /**
+     * Places a manual bid on an auction.
+     *
+     * @param auctionId the auction to bid on
+     * @param bidderId  id of the user placing the bid
+     * @param amount    bid amount, at least current price + increment
+     * @return the saved bid
+     * @throws IllegalArgumentException if the bid is too low or the user is not allowed to bid
+     * @throws IllegalStateException    if the auction is no longer active
+     */
     public Bid placeBid(Long auctionId, String bidderId, BigDecimal amount) {
         Auction auction = auctionDao.findById(auctionId);
         if (auction == null) throw new IllegalArgumentException("Auction not found.");
@@ -47,7 +57,7 @@ public class BidService {
         if (auction.getStatus() != AuctionStatus.ACTIVE) {
             throw new IllegalStateException("This auction is no longer active.");
         }
-        // The close timer only runs once a minute, so it can still be ACTIVE here.
+        // end time check (close timer runs every minute)
         if (auction.isExpired()) {
             throw new IllegalStateException("This auction has already ended.");
         }
@@ -69,14 +79,14 @@ public class BidService {
                     " + $" + step.toPlainString() + " increment).");
         }
 
-        // bid >= buy now price -> they just buy it at that price
+        // buy now
         boolean isBuyNow = auction.hasBuyNow()
                 && amount.compareTo(auction.getBuyNowPrice()) >= 0;
         if (isBuyNow) {
             amount = auction.getBuyNowPrice();
         }
 
-        // leader before the new bid is saved
+        // previous leader, before saving
         Bid prevTop = bidDao.findHighestBid(auctionId);
         String prevLeaderId = prevTop != null ? prevTop.getBidder().getId() : null;
 

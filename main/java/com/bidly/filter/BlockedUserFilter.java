@@ -11,7 +11,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-// logs out users that got blocked or deleted while logged in
+/**
+ * Logs out users that were blocked or deleted while logged in.
+ */
 public class BlockedUserFilter implements Filter {
 
     @EJB
