@@ -36,7 +36,7 @@ public class AuctionCloseService {
 
     @PostConstruct
     public void init() {
-        LOG.info("AuctionCloseService started - checking expired auctions periodically");
+        LOG.info("AuctionCloseService started");
     }
 
     @Schedule(minute = "*/1", hour = "*", persistent = false)

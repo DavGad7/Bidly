@@ -2,8 +2,6 @@ package com.bidly.model;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "CATEGORIES")
@@ -32,9 +30,6 @@ public class Category implements Serializable {
 
     @Column(name = "ICON_CLASS", length = 40)
     private String iconClass;
-
-    @OneToMany(mappedBy = "category")
-    private List<Auction> auctions = new ArrayList<>();
 
     public Category() {
     }
@@ -97,14 +92,6 @@ public class Category implements Serializable {
 
     public void setIconClass(String iconClass) {
         this.iconClass = iconClass;
-    }
-
-    public List<Auction> getAuctions() {
-        return auctions;
-    }
-
-    public void setAuctions(List<Auction> auctions) {
-        this.auctions = auctions;
     }
 
     @Override

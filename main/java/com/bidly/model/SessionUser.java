@@ -39,9 +39,4 @@ public class SessionUser implements Serializable {
     public boolean isAdmin() {
         return role == UserRole.ADMIN;
     }
-
-    @Override
-    public String toString() {
-        return "SessionUser{id=" + id + ", username='" + username + "'}";
-    }
 }

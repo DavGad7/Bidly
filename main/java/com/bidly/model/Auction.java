@@ -293,9 +293,4 @@ public class Auction implements Serializable {
     public int hashCode() {
         return getClass().hashCode();
     }
-
-    @Override
-    public String toString() {
-        return "Auction #" + id + " " + title + " [" + status + "]";
-    }
 }

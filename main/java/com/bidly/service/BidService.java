@@ -47,7 +47,7 @@ public class BidService {
         if (auction.getStatus() != AuctionStatus.ACTIVE) {
             throw new IllegalStateException("This auction is no longer active.");
         }
-        // The close timer only runs once a minute, so it can still be ACTIVE here.
+        // timer runs once a minute so it can still be ACTIVE here
         if (auction.isExpired()) {
             throw new IllegalStateException("This auction has already ended.");
         }

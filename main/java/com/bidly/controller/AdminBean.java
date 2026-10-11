@@ -139,7 +139,7 @@ public class AdminBean implements Serializable {
         loadUsers();
     }
 
-    public List<User> getFilteredUsers() {
+    public List<User> getUsers() {
         return users;
     }
 

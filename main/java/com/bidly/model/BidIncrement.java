@@ -82,11 +82,4 @@ public class BidIncrement implements Serializable {
     public int hashCode() {
         return getClass().hashCode();
     }
-
-    @Override
-    public String toString() {
-        return "BidIncrement{" + fromPrice + " - " +
-               (toPrice != null ? toPrice : "unlimited") +
-               ", step=" + increment + '}';
-    }
 }
