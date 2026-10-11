@@ -33,7 +33,7 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        // Only seed an empty DB (H2 keeps its data in a file between restarts).
+        // Only seed an empty DB
         if (!categoryDao.findAll().isEmpty()) {
             LOG.info("Database already seeded, skipping DataInitializer.");
             return;

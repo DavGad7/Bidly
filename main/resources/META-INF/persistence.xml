@@ -20,7 +20,7 @@
         <class>com.bidly.model.WatchlistEntry</class>
 
         <properties>
-            <!-- "create" only adds missing tables, existing data is kept -->
+            <!-- create = only adds missing tables -->
             <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
             <property name="eclipselink.logging.level" value="FINE"/>
             <property name="eclipselink.target-database"

@@ -44,10 +44,10 @@ public class BidService {
         User bidder = userDao.findById(bidderId);
         if (bidder == null) throw new IllegalArgumentException("User not found.");
 
-        // The close timer only runs once a minute, so check isExpired() too.
         if (auction.getStatus() != AuctionStatus.ACTIVE) {
             throw new IllegalStateException("This auction is no longer active.");
         }
+        // The close timer only runs once a minute, so it can still be ACTIVE here.
         if (auction.isExpired()) {
             throw new IllegalStateException("This auction has already ended.");
         }
