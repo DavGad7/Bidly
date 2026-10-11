@@ -78,9 +78,9 @@ public class AutoBidService {
     }
 
     /**
-     * Proxy bidding. Called after every normal bid and when someone sets an auto bid.
-     * Places at most one automatic bid per call: the strongest auto bidder goes one
-     * increment above the second highest max (or less if their own max is lower).
+     * Proxy bidding, called after every normal bid and when someone sets an auto bid.
+     * Places at most one bid per call: the best auto bidder goes 1 increment over
+     * the 2nd highest max (capped at their own max).
      */
     public void processAutoBids(Auction auction) {
         auction = auctionDao.findById(auction.getId());
@@ -103,7 +103,7 @@ public class AutoBidService {
         AutoBid topChallenger = null;
         AutoBid otherChallenger = null;
 
-        // the query sorts by maxAmount desc, so the first challengers we find are the strongest
+        // query is sorted by maxAmount desc
         for (AutoBid ab : active) {
             if (ab.getBidder().isBlocked()) {
                 continue;
@@ -126,8 +126,7 @@ public class AutoBidService {
         AutoBid winning;
         BigDecimal secondPrice;
 
-        // If the leader has an auto bid that covers the best challenger they just stay on top.
-        // On a tie the leader wins because they got there first.
+        // leader stays on top if their max covers it (ties go to the leader)
         if (leaderBid != null && leaderBid.getMaxAmount().compareTo(topChallenger.getMaxAmount()) >= 0) {
             winning = leaderBid;
             secondPrice = topChallenger.getMaxAmount();
@@ -150,7 +149,6 @@ public class AutoBidService {
             newPrice = minNextBid;
         }
 
-        // Same buy now rule as BidService.placeBid
         boolean hitBuyNow = auction.hasBuyNow() && newPrice.compareTo(auction.getBuyNowPrice()) >= 0;
         if (hitBuyNow) {
             newPrice = auction.getBuyNowPrice();

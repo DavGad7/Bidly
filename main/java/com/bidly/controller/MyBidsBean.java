@@ -56,8 +56,4 @@ public class MyBidsBean implements Serializable {
     public List<Bid> getBids() {
         return bids;
     }
-
-    public void setBids(List<Bid> bids) {
-        this.bids = bids;
-    }
 }

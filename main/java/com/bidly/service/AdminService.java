@@ -17,10 +17,8 @@ public class AdminService {
 
     @EJB
     private UserDao userDao;
-
     @EJB
     private AuctionDao auctionDao;
-
     @EJB
     private BidDao bidDao;
 

@@ -18,7 +18,6 @@ public class MinBidValidator implements Validator<BigDecimal> {
             return;
         }
 
-        // passed in from the page with <f:attribute name="minimumBid" .../>
         Object attr = component.getAttributes().get("minimumBid");
         if (attr == null) {
             return;
@@ -39,4 +38,3 @@ public class MinBidValidator implements Validator<BigDecimal> {
         }
     }
 }
-

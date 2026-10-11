@@ -28,4 +28,3 @@ public class EmailFormatValidator implements Validator<String> {
         }
     }
 }
-

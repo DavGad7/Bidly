@@ -100,7 +100,6 @@ public class CreateAuctionBean implements Serializable {
             return null;
         }
 
-        // no date/time picked -> use the default duration
         LocalDateTime end;
         try {
             if (endDateStr != null && !endDateStr.isBlank()
@@ -169,9 +168,7 @@ public class CreateAuctionBean implements Serializable {
         }
     }
 
-    // Checks both the file extension and the MIME type the browser sent.
-    // SVG is not allowed on purpose since it can have <script> in it and ImageServlet
-    // serves the photos from our own domain.
+    // Check both the extension and the mime type. SVG isn't allowed since it can contain scripts.
     private static boolean isAllowedImage(Part part) {
         String fileName = part.getSubmittedFileName();
         if (fileName == null || fileName.isBlank()) {
@@ -291,9 +288,5 @@ public class CreateAuctionBean implements Serializable {
 
     public String getErrorMessage() {
         return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
     }
 }

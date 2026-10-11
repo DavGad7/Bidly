@@ -53,7 +53,7 @@ public class LoginBean {
 
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         String redirectUrl = (String) ec.getSessionMap().remove("redirectUrl");
-        // go back to the page AuthFilter saved, but only relative URLs (no redirect to other sites)
+        // relative urls only
         if (redirectUrl != null && !redirectUrl.isBlank() && !redirectUrl.contains("://")) {
             try {
                 ec.redirect(redirectUrl);
@@ -83,9 +83,5 @@ public class LoginBean {
 
     public String getErrorMessage() {
         return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
     }
 }

@@ -24,7 +24,6 @@ public class NavigationBean implements Serializable {
 
     public void login(SessionUser user) {
         loggedInUser = user;
-        // the filters read the user from the HttpSession directly
         FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().put(SessionUser.SESSION_KEY, user);
     }
@@ -62,9 +61,4 @@ public class NavigationBean implements Serializable {
     public long getUnreadNotificationCount() {
         return unreadNotificationCount;
     }
-
-    public void setUnreadNotificationCount(long unreadNotificationCount) {
-        this.unreadNotificationCount = unreadNotificationCount;
-    }
 }
-

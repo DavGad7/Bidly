@@ -47,3 +47,4 @@ public class BidDao {
         em.persist(bid);
     }
 }
+

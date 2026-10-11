@@ -33,7 +33,7 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        // H2 runs in file mode so the data survives a restart, only seed an empty DB
+        // Only seed an empty DB (H2 keeps its data in a file between restarts).
         if (!categoryDao.findAll().isEmpty()) {
             LOG.info("Database already seeded, skipping DataInitializer.");
             return;
@@ -69,7 +69,6 @@ public class DataInitializer {
         LOG.info("Seeded " + cats.length + " categories.");
     }
 
-    // Price ranges and their bid step. Last one has no upper limit.
     private void seedBidIncrements() {
         bidIncrementDao.save(new BidIncrement(bd("0.01"), bd("9.99"), bd("0.50")));
         bidIncrementDao.save(new BidIncrement(bd("10.00"), bd("49.99"), bd("1.00")));

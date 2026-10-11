@@ -18,7 +18,7 @@ public final class DateUtil {
         return dt.format(DATETIME_FMT);
     }
 
-    // Shown on the auction cards. Looks like "3d 4h", "2h 15m" or "45m"
+    // "3d 4h", "2h 15m" or "45m"
     public static String formatTimeRemaining(LocalDateTime endTime) {
         if (endTime == null) {
             return "";
@@ -57,4 +57,3 @@ public final class DateUtil {
         return d.toMinutes() + " minutes ago";
     }
 }
-

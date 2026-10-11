@@ -145,8 +145,7 @@ public class UserService {
         user.setBlockReason(null);
         userDao.update(user);
 
-        // Only reactivate what blockUser() suspended. If the seller or an admin suspended
-        // an auction on their own it stays suspended.
+        // Only reactivate what blockUser() suspended, not auctions suspended for other reasons.
         for (Auction auction : auctionDao.findBySeller(userId)) {
             if (auction.getStatus() == AuctionStatus.SUSPENDED
                     && auction.getSuspendedBy() == Auction.SuspendedBy.BLOCK) {
@@ -159,11 +158,8 @@ public class UserService {
         recalcPrices(userId);
     }
 
-    /*
-     * Bids from blocked users are filtered in JPQL (b.bidder.blocked = false), so the query reads
-     * the column from the database. Flushing first makes sure it sees the change we just made.
-     */
     private void recalcPrices(String userId) {
+        // flush first so the query sees the blocked flag
         userDao.flush();
         for (Auction auction : auctionDao.findOpenWithBidsFrom(userId)) {
             Bid top = bidDao.findHighestBid(auction.getId());
@@ -189,7 +185,6 @@ public class UserService {
         }
     }
 
-    // reputation = items sold (closed with a winner) + auctions won
     public int getReputation(String userId) {
         int sales = 0;
         for (Auction a : auctionDao.findBySeller(userId)) {

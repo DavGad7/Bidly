@@ -44,7 +44,7 @@ public class AuctionDao {
 
     public List<Auction> search(String keyword, Long categoryId,
                                 String sortBy, int page, int pageSize) {
-        // endTime > now too, the close timer might not have closed it yet
+        // timer might not have closed it yet
         StringBuilder jpql = new StringBuilder(
                 "SELECT a FROM Auction a WHERE a.status = :status AND a.endTime > :now"
                 + " AND a.seller.blocked = false");
@@ -151,8 +151,7 @@ public class AuctionDao {
     public void delete(Auction auction) {
         Auction managed = em.find(Auction.class, auction.getId());
         if (managed == null) return;
-        // Bids, auto bids and watchlist entries aren't cascaded from Auction so they
-        // have to be deleted first (FK). Photos are removed by cascade = ALL.
+        // Bids, auto bids and watchlist rows aren't cascaded, so they have to be deleted first because of the FKs.
         em.createQuery("DELETE FROM Bid b WHERE b.auction.id = :id")
           .setParameter("id", managed.getId())
           .executeUpdate();

@@ -39,7 +39,6 @@ public class AuctionCloseService {
         LOG.info("AuctionCloseService started - checking expired auctions periodically");
     }
 
-    // not persistent - otherwise after a restart the server tries to run all the missed timers
     @Schedule(minute = "*/1", hour = "*", persistent = false)
     public void closeExpiredAuctions() {
         LocalDateTime now = LocalDateTime.now();

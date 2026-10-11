@@ -260,11 +260,7 @@ public class AuctionDetailBean implements Serializable {
         this.autoBidMax = autoBidMax;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+    public String getErrorMessage() { return errorMessage; }
 
-    public String getSuccessMessage() {
-        return successMessage;
-    }
+    public String getSuccessMessage() { return successMessage; }
 }

@@ -268,17 +268,9 @@ public class ProfileBean implements Serializable {
         return userAuctions;
     }
 
-    public int getReputation() {
-        return reputation;
-    }
-
-    public int getCompletedAuctions() {
-        return completedAuctions;
-    }
-
-    public int getAuctionsWon() {
-        return auctionsWon;
-    }
+    public int getReputation() { return reputation; }
+    public int getCompletedAuctions() { return completedAuctions; }
+    public int getAuctionsWon() { return auctionsWon; }
 
     public String getErrorMessage() {
         return errorMessage;

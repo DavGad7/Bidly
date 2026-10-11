@@ -1,4 +1,3 @@
-/* body is a flex column and main gets flex: 1, that keeps the footer at the bottom on short pages */
 body {
     font-family: 'Nunito', sans-serif;
     font-size: 1rem;
@@ -233,7 +232,7 @@ main {
     transform: translateY(-2px);
 }
 
-/* Create auction: photo previews. Green border + "Main" label = the main photo */
+/* create auction photo previews */
 .photo-preview {
     position: relative;
     width: 100px;

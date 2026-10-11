@@ -22,13 +22,10 @@ public class BidService {
 
     @EJB
     private BidDao bidDao;
-
     @EJB
     private AuctionDao auctionDao;
-
     @EJB
     private BidIncrementDao bidIncrementDao;
-
     @EJB
     private UserDao userDao;
 
@@ -47,8 +44,7 @@ public class BidService {
         User bidder = userDao.findById(bidderId);
         if (bidder == null) throw new IllegalArgumentException("User not found.");
 
-        // AuctionCloseService only runs once a minute, so an auction can still be ACTIVE
-        // for a bit after its end time. That's why isExpired() is checked as well.
+        // The close timer only runs once a minute, so check isExpired() too.
         if (auction.getStatus() != AuctionStatus.ACTIVE) {
             throw new IllegalStateException("This auction is no longer active.");
         }
@@ -73,14 +69,14 @@ public class BidService {
                     " + $" + step.toPlainString() + " increment).");
         }
 
-        // Bidding the buy now price (or more) just buys the item, and they pay the buy now price.
+        // bid >= buy now price -> they just buy it at that price
         boolean isBuyNow = auction.hasBuyNow()
                 && amount.compareTo(auction.getBuyNowPrice()) >= 0;
         if (isBuyNow) {
             amount = auction.getBuyNowPrice();
         }
 
-        // Need the leader from BEFORE this bid, after save() findHighestBid would return the new one
+        // leader before the new bid is saved
         Bid prevTop = bidDao.findHighestBid(auctionId);
         String prevLeaderId = prevTop != null ? prevTop.getBidder().getId() : null;
 

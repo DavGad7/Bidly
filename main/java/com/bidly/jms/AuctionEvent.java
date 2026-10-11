@@ -55,4 +55,3 @@ public class AuctionEvent implements Serializable {
                ", targetUserId=" + targetUserId + '}';
     }
 }
-

@@ -26,7 +26,6 @@ public class AuthFilter implements Filter {
                 url += "?" + qs;
             }
 
-            // LoginBean sends them back here after they log in
             req.getSession(true).setAttribute("redirectUrl", url);
             res.sendRedirect(req.getContextPath() + "/login.xhtml");
             return;

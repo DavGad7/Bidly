@@ -4,10 +4,6 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_4_0.xsd"
          version="4.0">
 
-    <!--
-        Without this the container wraps these exceptions in an EJBException and the
-        beans can't catch them by type. rollback=true so a failed bid doesn't save anything.
-    -->
     <assembly-descriptor>
         <application-exception>
             <exception-class>java.lang.IllegalArgumentException</exception-class>

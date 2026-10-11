@@ -45,4 +45,3 @@ public class SessionUser implements Serializable {
         return "SessionUser{id=" + id + ", username='" + username + "'}";
     }
 }
-

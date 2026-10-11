@@ -57,4 +57,3 @@ public class PasswordStrengthValidator implements Validator<String> {
         }
     }
 }
-

@@ -32,7 +32,7 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 
-    <!-- Declared first so it runs before AuthFilter. Logs out users that got blocked -->
+    <!-- needs to stay before AuthFilter -->
     <filter>
         <filter-name>BlockedUserFilter</filter-name>
         <filter-class>com.bidly.filter.BlockedUserFilter</filter-class>
@@ -46,7 +46,7 @@
         <filter-name>AuthFilter</filter-name>
         <filter-class>com.bidly.filter.AuthFilter</filter-class>
     </filter>
-    <!-- Pages that need a logged in user. /admin/* has its own AdminFilter below -->
+    <!-- pages that need login -->
     <filter-mapping>
         <filter-name>AuthFilter</filter-name>
         <url-pattern>/my-auctions.xhtml</url-pattern>
@@ -81,7 +81,7 @@
         <url-pattern>/admin/*</url-pattern>
     </filter-mapping>
 
-    <!-- H2 in file mode, the data is stored in ./bidly-data so it survives a restart -->
+    <!-- H2 database, stored in ./bidly-data -->
     <data-source>
         <name>java:app/jdbc/BidlyDS</name>
         <class-name>org.h2.jdbcx.JdbcDataSource</class-name>
@@ -90,7 +90,7 @@
         <password></password>
     </data-source>
 
-    <!-- JMS queue for notifications (AuctionEventProducer sends, AuctionEventMDB receives) -->
+    <!-- JMS queue for notifications -->
     <jms-connection-factory>
         <name>java:app/jms/BidlyConnectionFactory</name>
         <interface-name>jakarta.jms.ConnectionFactory</interface-name>
