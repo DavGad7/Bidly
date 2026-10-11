@@ -3,6 +3,8 @@ package com.bidly.model;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -59,6 +61,12 @@ public class User implements Serializable {
 
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "seller")
+    private List<Auction> auctions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "bidder")
+    private List<Bid> bids = new ArrayList<>();
 
     public User() {
     }
@@ -174,6 +182,22 @@ public class User implements Serializable {
         this.createdAt = createdAt;
     }
 
+    public List<Auction> getAuctions() {
+        return auctions;
+    }
+
+    public void setAuctions(List<Auction> auctions) {
+        this.auctions = auctions;
+    }
+
+    public List<Bid> getBids() {
+        return bids;
+    }
+
+    public void setBids(List<Bid> bids) {
+        this.bids = bids;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -185,5 +209,10 @@ public class User implements Serializable {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", username='" + username + "'}";
     }
 }

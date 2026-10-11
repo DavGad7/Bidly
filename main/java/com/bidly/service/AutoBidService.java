@@ -77,8 +77,11 @@ public class AutoBidService {
         return autoBidDao.findByAuctionAndBidder(auctionId, userId);
     }
 
-    // proxy bidding - max one bid per call. best auto bid goes 1 increment over
-    // the 2nd highest max, but never over its own max
+    /**
+     * Proxy bidding, called after every normal bid and when someone sets an auto bid.
+     * Places at most one bid per call: the best auto bidder goes 1 increment over
+     * the 2nd highest max (capped at their own max).
+     */
     public void processAutoBids(Auction auction) {
         auction = auctionDao.findById(auction.getId());
         if (auction == null || auction.getStatus() != AuctionStatus.ACTIVE) {

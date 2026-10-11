@@ -19,7 +19,7 @@ public class ImageServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = Logger.getLogger(ImageServlet.class.getName());
 
-    static final Set<String> SAFE_IMAGE_TYPES = Set.of(
+    private static final Set<String> SAFE_IMAGE_TYPES = Set.of(
             "image/jpeg", "image/png", "image/webp", "image/pjpeg", "image/x-png"
     );
 

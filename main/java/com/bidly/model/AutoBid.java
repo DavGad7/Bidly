@@ -49,6 +49,7 @@ public class AutoBid implements Serializable {
         this.auction = auction;
         this.bidder = bidder;
         this.maxAmount = maxAmount;
+        this.active = true;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -111,5 +112,10 @@ public class AutoBid implements Serializable {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "AutoBid " + id + " (max " + maxAmount + (active ? ")" : ", off)");
     }
 }

@@ -90,4 +90,11 @@ public class WatchlistEntry implements Serializable {
     public void setAuction(Auction auction) {
         this.auction = auction;
     }
+
+    @Override
+    public String toString() {
+        return "WatchlistEntry{id=" + id +
+               ", userId=" + (user != null ? user.getId() : null) +
+               ", auctionId=" + (auction != null ? auction.getId() : null) + '}';
+    }
 }

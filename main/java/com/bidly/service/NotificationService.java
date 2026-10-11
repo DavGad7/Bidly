@@ -10,6 +10,7 @@ import jakarta.ejb.Stateless;
 import java.util.List;
 
 @Stateless
+@Logged
 public class NotificationService {
 
     @EJB

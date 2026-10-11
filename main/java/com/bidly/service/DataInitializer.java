@@ -35,11 +35,11 @@ public class DataInitializer {
     public void init() {
         // Only seed an empty DB
         if (!categoryDao.findAll().isEmpty()) {
-            LOG.info("DB already has data, not seeding");
+            LOG.info("Database already seeded, skipping DataInitializer.");
             return;
         }
 
-        LOG.info("Seeding demo data");
+        LOG.info("Seeding initial demo data...");
 
         seedCategories();
         seedBidIncrements();
@@ -47,7 +47,7 @@ public class DataInitializer {
         User[] users = seedSampleUsers();
         seedSampleAuctions(users);
 
-        LOG.info("Seed done");
+        LOG.info("Seed data initialized successfully.");
     }
 
     private void seedCategories() {
@@ -147,7 +147,7 @@ public class DataInitializer {
         seedBids(jordans, users);
         seedBids(pokemon, users);
 
-        LOG.info("Seeded 6 sample auctions (3 with bids)");
+        LOG.info("Seeded 6 sample auctions with bids.");
     }
 
     private void attachPhotos(Auction auction, String... resourceNames) {

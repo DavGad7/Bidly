@@ -56,6 +56,7 @@ public class Notification implements Serializable {
         this.message = message;
         this.type = type;
         this.relatedAuctionId = relatedAuctionId;
+        this.readStatus = false;
         this.createdAt = LocalDateTime.now();
     }
 

@@ -13,7 +13,6 @@ import jakarta.inject.Named;
 import jakarta.servlet.http.Part;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -35,6 +34,9 @@ public class CreateAuctionBean implements Serializable {
 
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
             "jpg", "jpeg", "png", "webp", "jfif"
+    );
+    private static final Set<String> ALLOWED_MIME_TYPES = Set.of(
+            "image/jpeg", "image/png", "image/webp", "image/pjpeg", "image/x-png"
     );
 
     @EJB
@@ -58,7 +60,7 @@ public class CreateAuctionBean implements Serializable {
     private String endDateStr;
     private String endTimeStr;
     private int durationDays = 7;
-    private int primaryPhotoIndex;
+    private int primaryPhotoIndex = 0;
     private transient List<Part> photos;
     private String errorMessage;
 
@@ -106,7 +108,7 @@ public class CreateAuctionBean implements Serializable {
             } else {
                 end = LocalDateTime.now().plusDays(durationDays);
             }
-        } catch (DateTimeException e) {
+        } catch (Exception e) {
             errorMessage = "Invalid date or time format.";
             return null;
         }
@@ -166,7 +168,7 @@ public class CreateAuctionBean implements Serializable {
         }
     }
 
-    // checks extension + mime type. no svg (can have scripts in it)
+    // Extension AND mime type have to match. No SVG, it can contain scripts.
     private static boolean isAllowedImage(Part part) {
         String fileName = part.getSubmittedFileName();
         if (fileName == null || fileName.isBlank()) {
@@ -183,7 +185,7 @@ public class CreateAuctionBean implements Serializable {
         }
 
         String mime = part.getContentType();
-        return mime != null && ImageServlet.SAFE_IMAGE_TYPES.contains(mime.toLowerCase());
+        return mime != null && ALLOWED_MIME_TYPES.contains(mime.toLowerCase());
     }
 
     private static String shortFileName(Part part) {
