@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="jakarta.faces.passthrough">
+
+<ui:composition template="/templates/layout.xhtml">
+
+    <ui:define name="title">Login - Bidly</ui:define>
+
+    <ui:define name="content">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="text-center mb-4">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </h3>
+
+                        <ui:fragment rendered="#{loginBean.errorMessage != null}">
+                            <div class="alert alert-danger">
+                                #{loginBean.errorMessage}
+                            </div>
+                        </ui:fragment>
+
+                        <h:form>
+                            <div class="mb-3">
+                                <label class="form-label">Username</label>
+                                <h:inputText value="#{loginBean.username}"
+                                             styleClass="form-control"
+                                             required="true"
+                                             requiredMessage="Username is required."
+                                             p:placeholder="Enter your username"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <h:inputSecret value="#{loginBean.password}"
+                                               styleClass="form-control"
+                                               required="true"
+                                               requiredMessage="Password is required."
+                                               p:placeholder="Enter your password"/>
+                            </div>
+
+                            <h:commandButton value="Login"
+                                             action="#{loginBean.login}"
+                                             styleClass="btn btn-primary w-100 mb-3"/>
+                        </h:form>
+
+                        <div class="text-center">
+                            <p class="text-muted">
+                                Don't have an account?
+                                <h:link outcome="/register" styleClass="link-primary">Register</h:link>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>
+
+</html>

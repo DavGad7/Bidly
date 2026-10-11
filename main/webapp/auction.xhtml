@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="jakarta.faces.passthrough">
+
+<ui:composition template="/templates/layout.xhtml">
+
+    <ui:define name="title">#{auctionDetailBean.auction.title} - Bidly</ui:define>
+
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="id" value="#{auctionDetailBean.auctionId}"/>
+            <f:event type="preRenderView" listener="#{auctionDetailBean.loadAuction}"/>
+        </f:metadata>
+
+        <ui:fragment rendered="#{auctionDetailBean.auction == null}">
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle"></i>
+                #{auctionDetailBean.errorMessage != null ? auctionDetailBean.errorMessage : 'Auction not found.'}
+            </div>
+        </ui:fragment>
+
+        <ui:fragment rendered="#{auctionDetailBean.auction != null}">
+            <ui:fragment rendered="#{auctionDetailBean.auction.status == 'SUSPENDED' and auctionDetailBean.auction.suspendedBy == 'ADMIN'
+                                     and (auctionDetailBean.seller or navigationBean.admin)}">
+                <div class="alert alert-warning">
+                    <i class="bi bi-pause-circle"></i> An admin suspended this auction, nobody can bid on it right now.
+                    <ui:fragment rendered="#{auctionDetailBean.auction.suspendReason != null}">
+                        <br/><strong>Reason:</strong> #{auctionDetailBean.auction.suspendReason}
+                    </ui:fragment>
+                </div>
+            </ui:fragment>
+            <div class="row g-4">
+                <div class="col-md-7">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <ui:fragment rendered="#{not empty auctionDetailBean.photos}">
+                                <img id="mainImage"
+                                     src="#{request.contextPath}/image?id=#{auctionDetailBean.photos[0].id}"
+                                     alt="#{auctionDetailBean.auction.title}"
+                                     class="gallery-main"/>
+
+                                <!-- thumbnails -->
+                                <div class="gallery-thumbnails">
+                                    <ui:repeat value="#{auctionDetailBean.photos}" var="photo">
+                                        <img src="#{request.contextPath}/image?id=#{photo.id}"
+                                             alt="Photo #{photo.position + 1}"
+                                             class="gallery-thumb"
+                                             onclick="document.getElementById('mainImage').src=this.src;
+                                                      document.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active'));
+                                                      this.classList.add('active');"/>
+                                    </ui:repeat>
+                                </div>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{empty auctionDetailBean.photos}">
+                                <div class="placeholder-img" style="height:300px">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                            </ui:fragment>
+                        </div>
+                    </div>
+
+                    <ui:fragment rendered="#{auctionDetailBean.canEditPhotos and not empty auctionDetailBean.photos}">
+                        <div class="card shadow-sm mt-3">
+                            <div class="card-body">
+                                <h5><i class="bi bi-images"></i> Manage Photos</h5>
+                                <h:form id="photoForm">
+                                    <ui:repeat value="#{auctionDetailBean.photos}" var="photo">
+                                        <div class="d-flex align-items-center gap-2 py-2 border-bottom">
+                                            <img src="#{request.contextPath}/image?id=#{photo.id}"
+                                                 alt="Photo #{photo.position + 1}" class="gallery-thumb"/>
+                                            <span class="small text-muted flex-grow-1">#{photo.fileName}</span>
+                                            <ui:fragment rendered="#{photo.primaryPhoto}">
+                                                <span class="badge bg-success">Main photo</span>
+                                            </ui:fragment>
+                                            <h:commandButton value="Make main" rendered="#{not photo.primaryPhoto}"
+                                                             action="#{auctionDetailBean.makeMainPhoto(photo.id)}"
+                                                             styleClass="btn btn-outline-primary btn-sm"/>
+                                            <h:commandButton value="Delete"
+                                                             action="#{auctionDetailBean.deletePhoto(photo.id)}"
+                                                             styleClass="btn btn-outline-danger btn-sm"
+                                                             onclick="return confirm('Delete this photo?')"/>
+                                        </div>
+                                    </ui:repeat>
+                                </h:form>
+                            </div>
+                        </div>
+                    </ui:fragment>
+
+                    <div class="card shadow-sm mt-3">
+                        <div class="card-body">
+                            <h5><i class="bi bi-text-paragraph"></i> Description</h5>
+                            <p style="white-space: pre-wrap;">#{auctionDetailBean.auction.description}</p>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mt-3">
+                        <div class="card-body">
+                            <h5><i class="bi bi-clock-history"></i> Bid History (#{auctionDetailBean.bidCount} bids)</h5>
+                            <ui:fragment rendered="#{not empty auctionDetailBean.bids}">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Bidder</th>
+                                                <th>Amount</th>
+                                                <th>Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <ui:repeat value="#{auctionDetailBean.bids}" var="bid">
+                                                <tr>
+                                                    <td>#{bid.anonymousDisplayName}
+                                                        <ui:fragment rendered="#{bid.automaticBid}">
+                                                            <span class="badge bg-info text-dark">auto</span>
+                                                        </ui:fragment>
+                                                    </td>
+                                                    <td class="price-current">$#{bid.amount}</td>
+                                                    <td class="text-muted small"><h:outputText value="#{bid.bidTime}"><f:convertDateTime type="localDateTime" pattern="MMM d, yyyy h:mm a"/></h:outputText></td>
+                                                </tr>
+                                            </ui:repeat>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{empty auctionDetailBean.bids}">
+                                <p class="text-muted">No bids yet.</p>
+                            </ui:fragment>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h3>#{auctionDetailBean.auction.title}</h3>
+
+                            <div class="mb-3">
+                                <span class="badge #{auctionDetailBean.auction.status == 'ACTIVE' ? 'badge-active' : 'badge-closed'}">
+                                    #{auctionDetailBean.auction.status}
+                                </span>
+                                <span class="badge bg-info text-dark ms-1">
+                                    #{auctionDetailBean.auction.category.name}
+                                </span>
+                            </div>
+
+                            <p class="mb-2">
+                                <i class="bi bi-person"></i> Seller:
+                                <h:link outcome="/profile" value="#{auctionDetailBean.auction.seller.displayName}">
+                                    <f:param name="userId" value="#{auctionDetailBean.auction.seller.id}"/>
+                                </h:link>
+                            </p>
+
+                            <div class="mb-3">
+                                <div class="text-muted small">Current Price</div>
+                                <div class="price-large">$#{auctionDetailBean.auction.currentPrice}</div>
+                            </div>
+
+                            <ui:fragment rendered="#{auctionDetailBean.auction.hasBuyNow() and auctionDetailBean.biddable}">
+                                <div class="mb-3">
+                                    <div class="text-muted small">Buy Now Price</div>
+                                    <div class="price-buynow">$#{auctionDetailBean.auction.buyNowPrice}</div>
+                                </div>
+                            </ui:fragment>
+
+                            <div class="mb-3">
+                                <i class="bi bi-clock"></i>
+                                <span class="time-remaining">#{auctionDetailBean.auction.timeRemaining}</span>
+                            </div>
+
+                            <div class="d-flex gap-3 text-muted small mb-3">
+                                <span><i class="bi bi-eye"></i> #{auctionDetailBean.auction.viewCount} views</span>
+                                <span><i class="bi bi-cash-coin"></i> #{auctionDetailBean.bidCount} bids</span>
+                            </div>
+
+                            <ui:fragment rendered="#{auctionDetailBean.auction.status == 'CLOSED'
+                                                     and auctionDetailBean.auction.winner != null
+                                                     and auctionDetailBean.seller}">
+                                <div class="alert alert-success">
+                                    <i class="bi bi-trophy"></i>
+                                    <strong>Winner:</strong>
+                                    #{auctionDetailBean.auction.winner.displayName}
+                                    (#{auctionDetailBean.auction.winner.email})
+                                </div>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{auctionDetailBean.auction.status == 'CLOSED'
+                                                     and auctionDetailBean.winner}">
+                                <div class="alert alert-info">
+                                    <h5><i class="bi bi-trophy-fill"></i> You won this auction!</h5>
+                                    <p class="mb-1">
+                                        <strong>Seller:</strong> #{auctionDetailBean.auction.seller.displayName}
+                                    </p>
+                                    <p class="mb-1">
+                                        <strong>Email:</strong>
+                                        <a href="mailto:#{auctionDetailBean.auction.seller.email}">#{auctionDetailBean.auction.seller.email}</a>
+                                    </p>
+                                    <ui:fragment rendered="#{auctionDetailBean.auction.contactInfo != null
+                                                             and not empty auctionDetailBean.auction.contactInfo}">
+                                        <p class="mb-0">
+                                            <strong>Contact:</strong> #{auctionDetailBean.auction.contactInfo}
+                                        </p>
+                                    </ui:fragment>
+                                </div>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{auctionDetailBean.auction.contactInfo != null
+                                                     and not empty auctionDetailBean.auction.contactInfo
+                                                     and auctionDetailBean.auction.status == 'ACTIVE'
+                                                     and not navigationBean.admin}">
+                                <p class="mb-2 text-muted small">
+                                    <i class="bi bi-info-circle"></i> Seller provided contact info (visible to winner after auction ends)
+                                </p>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{navigationBean.admin and not auctionDetailBean.seller}">
+                                <div class="alert alert-warning">
+                                    <h6><i class="bi bi-shield-lock"></i> Admin View</h6>
+                                    <p class="mb-1">
+                                        <strong>Seller Email:</strong>
+                                        <a href="mailto:#{auctionDetailBean.auction.seller.email}">#{auctionDetailBean.auction.seller.email}</a>
+                                    </p>
+                                    <ui:fragment rendered="#{auctionDetailBean.auction.contactInfo != null
+                                                             and not empty auctionDetailBean.auction.contactInfo}">
+                                        <p class="mb-2">
+                                            <strong>Contact Info:</strong> #{auctionDetailBean.auction.contactInfo}
+                                        </p>
+                                    </ui:fragment>
+                                    <h:form>
+                                        <h:commandButton value="Delete Auction"
+                                                         action="#{auctionDetailBean.adminDeleteAuction}"
+                                                         styleClass="btn btn-danger btn-sm w-100"
+                                                         onclick="return confirm('Are you sure you want to delete this auction? This cannot be undone.')"/>
+                                    </h:form>
+                                </div>
+                            </ui:fragment>
+
+                            <hr/>
+
+                            <ui:fragment rendered="#{auctionDetailBean.errorMessage != null}">
+                                <div class="alert alert-danger alert-dismissible">
+                                    #{auctionDetailBean.errorMessage}
+                                </div>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{auctionDetailBean.successMessage != null}">
+                                <div class="alert alert-success alert-dismissible">
+                                    #{auctionDetailBean.successMessage}
+                                </div>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{auctionDetailBean.biddable
+                                                     and navigationBean.loggedIn
+                                                     and not auctionDetailBean.seller}">
+                                <h:form id="bidForm">
+                                    <h5><i class="bi bi-cash-coin"></i> Place a Bid</h5>
+                                    <div class="mb-2">
+                                        <label class="form-label">
+                                            Bid Amount (min: $#{auctionDetailBean.minimumBid})
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <h:inputText id="bidAmountInput"
+                                                         value="#{auctionDetailBean.bidAmount}"
+                                                         styleClass="form-control"
+                                                         required="true"
+                                                         requiredMessage="Please enter a bid amount.">
+                                                <f:attribute name="minimumBid" value="#{auctionDetailBean.minimumBid}"/>
+                                                <f:validator validatorId="minBidValidator"/>
+                                            </h:inputText>
+                                        </div>
+                                        <h:message for="bidAmountInput" styleClass="text-danger small"/>
+                                    </div>
+                                    <h:commandButton value="Place Bid"
+                                                     action="#{auctionDetailBean.placeBid}"
+                                                     styleClass="btn btn-success w-100 mb-3"/>
+                                </h:form>
+
+                                <!-- auto bid -->
+                                <div class="border-top pt-3">
+                                    <h6><i class="bi bi-robot"></i> Auto-Bid (Proxy Bidding)</h6>
+                                    <ui:fragment rendered="#{auctionDetailBean.existingAutoBid == null or not auctionDetailBean.existingAutoBid.active}">
+                                        <p class="small text-muted">
+                                            Enter your maximum and the system will bid for you
+                                            (only as much as needed) when someone outbids you.
+                                        </p>
+                                        <h:form id="autoBidForm">
+                                            <div class="input-group mb-2">
+                                                <span class="input-group-text">$</span>
+                                                <h:inputText value="#{auctionDetailBean.autoBidMax}"
+                                                             styleClass="form-control"
+                                                             required="true"
+                                                             requiredMessage="Please enter a maximum amount."
+                                                             p:placeholder="Maximum amount"/>
+                                            </div>
+                                            <h:commandButton value="Set Auto-Bid"
+                                                             action="#{auctionDetailBean.setAutoBid}"
+                                                             styleClass="btn btn-outline-primary w-100"/>
+                                        </h:form>
+                                    </ui:fragment>
+                                    <ui:fragment rendered="#{auctionDetailBean.existingAutoBid != null and auctionDetailBean.existingAutoBid.active}">
+                                        <div class="alert alert-info">
+                                            <i class="bi bi-robot"></i>
+                                            Auto-bid active with max: $#{auctionDetailBean.existingAutoBid.maxAmount}
+                                        </div>
+                                        <h:form>
+                                            <h:commandButton value="Cancel Auto-Bid"
+                                                             action="#{auctionDetailBean.cancelAutoBid}"
+                                                             styleClass="btn btn-outline-danger w-100"/>
+                                        </h:form>
+                                    </ui:fragment>
+                                </div>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{not navigationBean.loggedIn and auctionDetailBean.biddable}">
+                                <div class="alert alert-info">
+                                    <h:link outcome="/login" styleClass="alert-link">Log in</h:link>
+                                    or
+                                    <h:link outcome="/register" styleClass="alert-link">register</h:link>
+                                    to place a bid.
+                                </div>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{navigationBean.loggedIn and not auctionDetailBean.seller}">
+                                <h:form styleClass="mt-3">
+                                    <h:commandButton value="#{auctionDetailBean.watching ? '❤ Watching' : '♡ Watch'}"
+                                                     action="#{auctionDetailBean.toggleWatchlist}"
+                                                     styleClass="btn #{auctionDetailBean.watching ? 'btn-danger' : 'btn-outline-danger'} w-100"/>
+                                </h:form>
+                            </ui:fragment>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ui:fragment>
+    </ui:define>
+
+</ui:composition>
+
+</html>

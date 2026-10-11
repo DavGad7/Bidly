@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<ui:composition template="/templates/layout.xhtml">
+
+    <ui:define name="title">My Auctions - Bidly</ui:define>
+
+    <ui:define name="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3><i class="bi bi-list-ul"></i> My Auctions</h3>
+            <h:form>
+                <h:commandButton value="Export CSV"
+                                 action="#{myAuctionsBean.exportCsv}"
+                                 styleClass="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-download"></i>
+                </h:commandButton>
+            </h:form>
+        </div>
+
+        <ui:fragment rendered="#{myAuctionsBean.errorMessage != null}">
+            <div class="alert alert-danger">#{myAuctionsBean.errorMessage}</div>
+        </ui:fragment>
+        <ui:fragment rendered="#{myAuctionsBean.successMessage != null}">
+            <div class="alert alert-success">#{myAuctionsBean.successMessage}</div>
+        </ui:fragment>
+
+        <!-- status filter -->
+        <h:form styleClass="mb-3">
+            <div class="btn-group" role="group">
+                <h:commandButton value="All" action="#{myAuctionsBean.filterByStatus}"
+                                 styleClass="btn #{myAuctionsBean.statusFilter == 'ALL' ? 'btn-primary' : 'btn-outline-primary'}">
+                    <f:setPropertyActionListener target="#{myAuctionsBean.statusFilter}" value="ALL"/>
+                </h:commandButton>
+                <h:commandButton value="Active" action="#{myAuctionsBean.filterByStatus}"
+                                 styleClass="btn #{myAuctionsBean.statusFilter == 'ACTIVE' ? 'btn-primary' : 'btn-outline-primary'}">
+                    <f:setPropertyActionListener target="#{myAuctionsBean.statusFilter}" value="ACTIVE"/>
+                </h:commandButton>
+                <h:commandButton value="Closed" action="#{myAuctionsBean.filterByStatus}"
+                                 styleClass="btn #{myAuctionsBean.statusFilter == 'CLOSED' ? 'btn-primary' : 'btn-outline-primary'}">
+                    <f:setPropertyActionListener target="#{myAuctionsBean.statusFilter}" value="CLOSED"/>
+                </h:commandButton>
+                <h:commandButton value="Cancelled" action="#{myAuctionsBean.filterByStatus}"
+                                 styleClass="btn #{myAuctionsBean.statusFilter == 'CANCELLED' ? 'btn-primary' : 'btn-outline-primary'}">
+                    <f:setPropertyActionListener target="#{myAuctionsBean.statusFilter}" value="CANCELLED"/>
+                </h:commandButton>
+                <h:commandButton value="Suspended" action="#{myAuctionsBean.filterByStatus}"
+                                 styleClass="btn #{myAuctionsBean.statusFilter == 'SUSPENDED' ? 'btn-primary' : 'btn-outline-primary'}">
+                    <f:setPropertyActionListener target="#{myAuctionsBean.statusFilter}" value="SUSPENDED"/>
+                </h:commandButton>
+            </div>
+        </h:form>
+
+        <ui:fragment rendered="#{not empty myAuctionsBean.filteredAuctions}">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Title</th>
+                            <th>Current Price</th>
+                            <th>Status</th>
+                            <th>End Time</th>
+                            <th>Winner</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ui:repeat value="#{myAuctionsBean.filteredAuctions}" var="auction">
+                            <tr>
+                                <td>
+                                    <h:link outcome="/auction" value="#{auction.title}">
+                                        <f:param name="id" value="#{auction.id}"/>
+                                    </h:link>
+                                </td>
+                                <td class="price-current">$#{auction.currentPrice}</td>
+                                <td>
+                                    <span class="badge #{auction.status == 'ACTIVE' ? 'badge-active' :
+                                                         auction.status == 'CLOSED' ? 'badge-closed' :
+                                                         auction.status == 'SUSPENDED' ? 'bg-warning text-dark' : 'badge-cancelled'}">
+                                        #{auction.status}
+                                    </span>
+                                </td>
+                                <td class="small"><h:outputText value="#{auction.endTime}"><f:convertDateTime type="localDateTime" pattern="MMM d, yyyy h:mm a"/></h:outputText></td>
+                                <td>
+                                    <ui:fragment rendered="#{auction.winner != null}">
+                                        #{auction.winner.displayName}
+                                        <br/><small class="text-muted">#{auction.winner.email}</small>
+                                    </ui:fragment>
+                                    <ui:fragment rendered="#{auction.winner == null and auction.status == 'CLOSED'}">
+                                        <span class="text-muted">No bids</span>
+                                    </ui:fragment>
+                                </td>
+                                <td>
+                                    <h:form rendered="#{auction.status == 'ACTIVE'}" styleClass="d-flex gap-1">
+                                        <h:commandButton value="Suspend"
+                                                         action="#{myAuctionsBean.suspendAuction(auction.id)}"
+                                                         styleClass="btn btn-outline-warning btn-sm"/>
+                                        <h:commandButton value="Cancel"
+                                                         action="#{myAuctionsBean.cancelAuction(auction.id)}"
+                                                         styleClass="btn btn-outline-danger btn-sm"
+                                                         onclick="return confirm('Are you sure you want to cancel this auction?');"/>
+                                    </h:form>
+                                    <h:form rendered="#{auction.status == 'SUSPENDED' and auction.suspendedBy == 'SELLER'}">
+                                        <h:commandButton value="Resume"
+                                                         action="#{myAuctionsBean.resumeAuction(auction.id)}"
+                                                         styleClass="btn btn-outline-success btn-sm"/>
+                                    </h:form>
+                                    <ui:fragment rendered="#{auction.status == 'SUSPENDED' and auction.suspendedBy == 'ADMIN'}">
+                                        <div class="small text-muted">Suspended by an admin</div>
+                                        <ui:fragment rendered="#{auction.suspendReason != null}">
+                                            <div class="small fst-italic">"#{auction.suspendReason}"</div>
+                                        </ui:fragment>
+                                    </ui:fragment>
+                                </td>
+                            </tr>
+                        </ui:repeat>
+                    </tbody>
+                </table>
+            </div>
+        </ui:fragment>
+
+        <ui:fragment rendered="#{empty myAuctionsBean.filteredAuctions}">
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <h4>No auctions found</h4>
+                <p>
+                    <h:link outcome="/create-auction" styleClass="btn btn-primary">
+                        Create Auction
+                    </h:link>
+                </p>
+            </div>
+        </ui:fragment>
+    </ui:define>
+
+</ui:composition>
+
+</html>
