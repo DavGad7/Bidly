@@ -14,99 +14,36 @@ main {
 }
 
 .card {
-    border: 1px solid #dce9e8;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 12px rgba(24, 49, 83, 0.06);
-}
-
-.card-body {
-    padding: 1.35rem;
+    border-radius: 0.5rem;
 }
 
 /* Navbar */
 .bidly-navbar {
     min-height: 76px;
-    background: linear-gradient(105deg, #183153 0%, #2474c6 72%, #3a9fc2 100%);
-    border-bottom: 3px solid #f28b52;
-    box-shadow: 0 4px 15px rgba(24, 49, 83, 0.15);
+    background-color: #183153;
+    border-bottom: 2px solid #f28b52;
 }
 
 .bidly-navbar .nav-link {
-    border-radius: 0.6rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: #ddd;
     font-weight: 600;
-    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.bidly-navbar .nav-link:hover,
-.bidly-navbar .nav-link:focus {
-    background-color: rgba(255, 255, 255, 0.14);
-    color: #ffffff;
+.bidly-navbar .nav-link:hover {
+    color: white;
 }
 
 .btn {
-    border-radius: 0.6rem;
-    font-weight: 700;
-}
-
-.btn-primary {
-    background-color: #2474c6;
-    border-color: #2474c6;
-}
-
-.btn-primary:hover,
-.btn-primary:focus-visible {
-    background-color: #1b5eaa;
-    border-color: #1b5eaa;
-}
-
-.btn-primary:active {
-    background-color: #174f8d !important;
-    border-color: #174f8d !important;
-}
-
-.btn-warning {
-    background-color: #f28b52;
-    border-color: #f28b52;
-    color: #183153;
-}
-
-.btn-warning:hover,
-.btn-warning:focus-visible {
-    background-color: #df7040;
-    border-color: #df7040;
-    color: #183153;
-}
-
-.form-control,
-.form-select {
-    border-color: #dce9e8;
-    border-radius: 0.6rem;
-    color: #183153;
-}
-
-.form-control:focus,
-.form-select:focus {
-    border-color: #62d5d0;
-    box-shadow: 0 0 0 0.2rem rgba(98, 213, 208, 0.2);
+    font-weight: 600;
 }
 
 /* Auction cards (home page) */
 .auction-card {
-    transition: box-shadow 0.2s ease, transform 0.15s ease;
-    border: 1px solid #dce9e8;
-    border-radius: 0.75rem;
     overflow: hidden;
-    background: #ffffff;
 }
 
 .auction-card:hover {
-    box-shadow: 0 14px 30px rgba(24, 49, 83, 0.14) !important;
-    transform: translateY(-4px);
-}
-
-.auction-card .card-body {
-    padding: 1.15rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
 .auction-card .card-title a:hover {
@@ -167,11 +104,11 @@ main {
 }
 
 .auction-card .placeholder-img {
-    background: linear-gradient(135deg, #e8f4f2 0%, #dcebea 100%);
+    background: #e9ecef;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #8aa9aa;
+    color: #adb5bd;
     font-size: 3rem;
 }
 
@@ -189,7 +126,6 @@ main {
 }
 
 .time-remaining {
-    font-family: 'Nunito', sans-serif;
     font-weight: 700;
     color: #607086;
 }
@@ -199,9 +135,8 @@ main {
     width: 100%;
     max-height: 400px;
     object-fit: contain;
-    background-color: #f2f8f7;
-    border: 1px solid #dce9e8;
-    border-radius: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
 }
 
 .gallery-thumbnails {
@@ -216,20 +151,15 @@ main {
     width: 70px;
     height: 70px;
     object-fit: cover;
-    border-radius: 0.45rem;
+    border-radius: 4px;
     border: 2px solid transparent;
     cursor: pointer;
     flex-shrink: 0;
-    transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
 .gallery-thumb:hover,
 .gallery-thumb.active {
     border-color: #f28b52;
-}
-
-.gallery-thumb:hover {
-    transform: translateY(-2px);
 }
 
 /* create auction photo previews */
@@ -240,7 +170,7 @@ main {
     overflow: hidden;
     cursor: pointer;
     border: 3px solid transparent;
-    border-radius: 0.6rem;
+    border-radius: 6px;
 }
 
 .photo-preview img {
@@ -296,7 +226,6 @@ main {
 /* notifications page */
 .notification-item {
     border-left: 4px solid transparent;
-    transition: background-color 0.15s ease;
 }
 
 .notification-unread {
@@ -307,10 +236,6 @@ main {
 .notification-read {
     background-color: #ffffff;
     border-left-color: transparent;
-}
-
-.notification-item:hover {
-    background-color: #f7fbfa;
 }
 
 .stat-card {
@@ -326,16 +251,14 @@ main {
 
 .stat-card .stat-label {
     font-size: 0.9rem;
-    color: #607086;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: #6c757d;
 }
 
 .avatar-circle {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #2474c6, #62d5d0);
+    background: #2474c6;
     color: #ffffff;
     display: flex;
     align-items: center;
@@ -370,7 +293,7 @@ main {
 }
 
 /* Phones - smaller images */
-@media (max-width: 767.98px) {
+@media (max-width: 768px) {
     .auction-card .card-img-top,
     .auction-card .placeholder-img {
         height: 160px;
