@@ -145,7 +145,7 @@ public class UserService {
         user.setBlockReason(null);
         userDao.update(user);
 
-        // Only reactivate what blockUser() suspended, not auctions suspended for other reasons.
+        // only the ones blockUser() suspended
         for (Auction auction : auctionDao.findBySeller(userId)) {
             if (auction.getStatus() == AuctionStatus.SUSPENDED
                     && auction.getSuspendedBy() == Auction.SuspendedBy.BLOCK) {

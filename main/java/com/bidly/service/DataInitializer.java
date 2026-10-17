@@ -33,7 +33,7 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        // Only seed an empty DB
+        // skip if already seeded
         if (!categoryDao.findAll().isEmpty()) {
             LOG.info("Database already seeded, skipping DataInitializer.");
             return;
