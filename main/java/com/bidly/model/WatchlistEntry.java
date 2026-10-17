@@ -20,8 +20,6 @@ import java.time.LocalDateTime;
 })
 public class WatchlistEntry implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,19 +42,6 @@ public class WatchlistEntry implements Serializable {
         this.user = user;
         this.auction = auction;
         this.addedAt = LocalDateTime.now();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        WatchlistEntry other = (WatchlistEntry) o;
-        return id != null && id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 
     public Long getId() {

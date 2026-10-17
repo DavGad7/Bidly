@@ -14,8 +14,6 @@ import java.util.List;
 @ViewScoped
 public class WatchlistBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @EJB
     private WatchlistService watchlistService;
 

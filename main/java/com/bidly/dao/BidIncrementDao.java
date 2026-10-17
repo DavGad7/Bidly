@@ -10,7 +10,7 @@ import java.util.List;
 @Stateless
 public class BidIncrementDao {
 
-    @PersistenceContext(unitName = "BidlyPU")
+    @PersistenceContext
     private EntityManager em;
 
     public BidIncrement findForPrice(BigDecimal price) {

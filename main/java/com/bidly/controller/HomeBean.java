@@ -17,7 +17,6 @@ import java.util.List;
 @ViewScoped
 public class HomeBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
     private static final int PAGE_SIZE = 12;
 
     @EJB

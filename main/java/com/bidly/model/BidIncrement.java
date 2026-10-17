@@ -14,8 +14,6 @@ import java.math.BigDecimal;
 })
 public class BidIncrement implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -68,19 +66,6 @@ public class BidIncrement implements Serializable {
 
     public void setIncrement(BigDecimal increment) {
         this.increment = increment;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BidIncrement other = (BidIncrement) o;
-        return id != null && id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 
     @Override

@@ -101,17 +101,4 @@ public class AuctionPhoto implements Serializable {
     public void setAuction(Auction auction) {
         this.auction = auction;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AuctionPhoto other = (AuctionPhoto) o;
-        return id != null && id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

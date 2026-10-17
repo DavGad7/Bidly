@@ -9,7 +9,7 @@ import java.util.List;
 @Stateless
 public class CategoryDao {
 
-    @PersistenceContext(unitName = "BidlyPU")
+    @PersistenceContext
     private EntityManager em;
 
     public List<Category> findAll() {

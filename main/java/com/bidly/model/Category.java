@@ -46,19 +46,6 @@ public class Category implements Serializable {
         this.iconClass = iconClass;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Category other = (Category) o;
-        return id != null && id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
     public Long getId() {
         return id;
     }

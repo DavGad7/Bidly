@@ -45,7 +45,7 @@ public class BidService {
         if (bidder == null) throw new IllegalArgumentException("User not found.");
 
         if (auction.getStatus() != AuctionStatus.ACTIVE) {
-            throw new IllegalStateException("Auction is not active anymore.");
+            throw new IllegalStateException("Auction isn't active.");
         }
         // timer runs every minute so it can still be ACTIVE here
         if (auction.isExpired()) {

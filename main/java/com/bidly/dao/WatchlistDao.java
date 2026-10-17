@@ -9,7 +9,7 @@ import java.util.List;
 @Stateless
 public class WatchlistDao {
 
-    @PersistenceContext(unitName = "BidlyPU")
+    @PersistenceContext
     private EntityManager em;
 
     public List<WatchlistEntry> findByUser(String userId) {

@@ -14,8 +14,6 @@ import java.util.List;
 @ViewScoped
 public class NotificationBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @EJB
     private NotificationService notificationService;
 

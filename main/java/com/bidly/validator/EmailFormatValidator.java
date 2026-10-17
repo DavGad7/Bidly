@@ -21,10 +21,8 @@ public class EmailFormatValidator implements Validator<String> {
         }
 
         if (!EMAIL_PATTERN.matcher(value.trim()).matches()) {
-            throw new ValidatorException(new FacesMessage(
-                    FacesMessage.SEVERITY_ERROR,
-                    "Invalid email format",
-                    "Not a valid email address."));
+            throw new ValidatorException(
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Not a valid email address.", null));
         }
     }
 }

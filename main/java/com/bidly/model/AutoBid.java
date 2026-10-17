@@ -102,19 +102,6 @@ public class AutoBid implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AutoBid other = (AutoBid) o;
-        return id != null && id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
-    @Override
     public String toString() {
         return "AutoBid " + id + " (max " + maxAmount + (active ? ")" : ", off)");
     }

@@ -39,7 +39,7 @@ public class AutoBidService {
         if (auction == null) throw new IllegalArgumentException("Auction not found.");
         User bidder = userDao.findById(bidderId);
         if (bidder == null) throw new IllegalArgumentException("User not found.");
-        if (auction.getStatus() != AuctionStatus.ACTIVE) throw new IllegalArgumentException("Auction is not active.");
+        if (auction.getStatus() != AuctionStatus.ACTIVE) throw new IllegalArgumentException("Auction isn't active.");
         if (auction.getSeller().getId().equals(bidder.getId())) {
             throw new IllegalArgumentException("You can't bid on your own auction.");
         }
