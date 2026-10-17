@@ -45,15 +45,15 @@ public class BidService {
         if (bidder == null) throw new IllegalArgumentException("User not found.");
 
         if (auction.getStatus() != AuctionStatus.ACTIVE) {
-            throw new IllegalStateException("This auction is no longer active.");
+            throw new IllegalStateException("Auction is not active anymore.");
         }
         // timer runs every minute so it can still be ACTIVE here
         if (auction.isExpired()) {
-            throw new IllegalStateException("This auction has already ended.");
+            throw new IllegalStateException("Auction already ended.");
         }
 
         if (auction.getSeller().getId().equals(bidder.getId())) {
-            throw new IllegalArgumentException("You cannot bid on your own auction.");
+            throw new IllegalArgumentException("You can't bid on your own auction.");
         }
         if (bidder.isBlocked()) {
             throw new IllegalArgumentException("Your account is blocked.");
@@ -64,9 +64,7 @@ public class BidService {
         BigDecimal minBid = currentPrice.add(step);
         if (amount.compareTo(minBid) < 0) {
             throw new IllegalArgumentException(
-                    "Minimum bid is $" + minBid.toPlainString() +
-                    " (current price $" + currentPrice.toPlainString() +
-                    " + $" + step.toPlainString() + " increment).");
+                    "Bid has to be at least $" + minBid.toPlainString());
         }
 
         // bid >= buy now price -> they just buy it at that price

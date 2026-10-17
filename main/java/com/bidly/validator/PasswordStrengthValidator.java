@@ -24,14 +24,14 @@ public class PasswordStrengthValidator implements Validator<String> {
             throw new ValidatorException(new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
                     "Password too short",
-                    "Password must be at least " + MIN_LENGTH + " characters long."));
+                    "Password must be at least " + MIN_LENGTH + " characters."));
         }
 
         if (value.length() > MAX_LENGTH) {
             throw new ValidatorException(new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
                     "Password too long",
-                    "Password must not exceed " + MAX_LENGTH + " characters."));
+                    "Password is too long (max " + MAX_LENGTH + ")."));
         }
 
         boolean hasUpper = false;
@@ -52,8 +52,7 @@ public class PasswordStrengthValidator implements Validator<String> {
             throw new ValidatorException(new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
                     "Password too weak",
-                    "Password must contain at least one uppercase letter, " +
-                    "one lowercase letter, and one digit."));
+                    "Password needs an uppercase letter, a lowercase letter and a number."));
         }
     }
 }

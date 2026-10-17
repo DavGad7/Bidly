@@ -17,7 +17,7 @@ public class AccountBlockedException extends RuntimeException {
     }
 
     public static String messageFor(String reason) {
-        return "Your account has been blocked by an administrator."
+        return "Your account was blocked by an admin."
                 + (reason != null ? " Reason: " + reason : "");
     }
 }

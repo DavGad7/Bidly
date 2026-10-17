@@ -123,7 +123,7 @@ public class PhotoService {
         boolean isAdmin = caller != null && caller.getRole() == UserRole.ADMIN;
         boolean isSeller = caller != null && auction.getSeller().getId().equals(caller.getId());
         if (!isAdmin && !isSeller) {
-            throw new SecurityException("Only the seller or an administrator can change this auction's photos.");
+            throw new SecurityException("You can't edit the photos of this auction.");
         }
     }
 

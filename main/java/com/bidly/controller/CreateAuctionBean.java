@@ -75,7 +75,7 @@ public class CreateAuctionBean implements Serializable {
         errorMessage = null;
 
         if (!navigationBean.isLoggedIn()) {
-            errorMessage = "You must be logged in to create an auction.";
+            errorMessage = "Log in first.";
             return null;
         }
 
@@ -92,11 +92,11 @@ public class CreateAuctionBean implements Serializable {
             return null;
         }
         if (startPrice == null || startPrice.compareTo(BigDecimal.ZERO) <= 0) {
-            errorMessage = "Start price must be greater than zero.";
+            errorMessage = "Start price must be more than 0.";
             return null;
         }
         if (buyNowPrice != null && buyNowPrice.compareTo(startPrice) <= 0) {
-            errorMessage = "Buy Now price must be greater than the start price.";
+            errorMessage = "Buy now price has to be higher than the start price.";
             return null;
         }
 
@@ -128,7 +128,7 @@ public class CreateAuctionBean implements Serializable {
                         return null;
                     }
                     if (!isAllowedImage(p)) {
-                        errorMessage = String.format("'%s' is not an allowed image format. Only JPEG, PNG, and WebP raster images are accepted (SVG is not allowed).",
+                        errorMessage = String.format("'%s' isn't a jpg, png or webp image.",
                                 shortFileName(p));
                         return null;
                     }

@@ -34,7 +34,7 @@ public class MinBidValidator implements Validator<BigDecimal> {
             throw new ValidatorException(new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
                     "Bid must be at least $" + min.toPlainString(),
-                    "The minimum allowed bid is $" + min.toPlainString() + "."));
+                    "Minimum bid is $" + min.toPlainString()));
         }
     }
 }

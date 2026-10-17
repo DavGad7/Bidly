@@ -75,7 +75,7 @@ public class AdminBean implements Serializable {
         errorMessage = null;
         userService.blockUser(userId, navigationBean.getUserId(), blockReasons.get(userId));
         blockReasons.clear();
-        successMessage = "User blocked successfully.";
+        successMessage = "User blocked.";
         loadUsers();
         loadAuctions();
         loadStats();
@@ -84,7 +84,7 @@ public class AdminBean implements Serializable {
     public void unblockUser(String userId) {
         errorMessage = null;
         userService.unblockUser(userId, navigationBean.getUserId());
-        successMessage = "User unblocked successfully.";
+        successMessage = "User unblocked.";
         loadUsers();
         loadAuctions();
         loadStats();
@@ -94,27 +94,28 @@ public class AdminBean implements Serializable {
         errorMessage = null;
         try {
             auctionService.deleteAuction(auctionId, navigationBean.getUserId());
-            successMessage = "Auction deleted successfully.";
-            loadAuctions();
-            loadStats();
+            successMessage = "Auction deleted.";
+            refresh();
         } catch (Exception e) {
             LOG.log(Level.WARNING, "Admin delete failed for auction " + auctionId, e);
-            errorMessage = "Failed to delete auction #" + auctionId + ". See the server log for details.";
+            errorMessage = "Couldn't delete auction #" + auctionId;
         }
     }
 
     public void suspendAuction(Long auctionId) {
         errorMessage = null;
         successMessage = null;
+        String reason = suspendReasons.get(auctionId);
+        suspendReasons.clear();
         try {
-            auctionService.suspendAuction(auctionId, navigationBean.getUserId(), suspendReasons.get(auctionId));
+            auctionService.suspendAuction(auctionId, navigationBean.getUserId(), reason);
             successMessage = "Auction #" + auctionId + " suspended.";
-        } catch (IllegalArgumentException | IllegalStateException | SecurityException e) {
+        } catch (SecurityException e) {
+            errorMessage = e.getMessage();
+        } catch (IllegalArgumentException | IllegalStateException e) {
             errorMessage = e.getMessage();
         }
-        suspendReasons.clear();
-        loadAuctions();
-        loadStats();
+        refresh();
     }
 
     public void resumeAuction(Long auctionId) {
@@ -126,6 +127,10 @@ public class AdminBean implements Serializable {
         } catch (IllegalArgumentException | IllegalStateException | SecurityException e) {
             errorMessage = e.getMessage();
         }
+        refresh();
+    }
+
+    private void refresh() {
         loadAuctions();
         loadStats();
     }

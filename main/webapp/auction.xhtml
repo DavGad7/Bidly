@@ -211,7 +211,7 @@
                                                      and auctionDetailBean.auction.status == 'ACTIVE'
                                                      and not navigationBean.admin}">
                                 <p class="mb-2 text-muted small">
-                                    <i class="bi bi-info-circle"></i> Seller provided contact info (visible to winner after auction ends)
+                                    <i class="bi bi-info-circle"></i> Seller left contact info for the winner
                                 </p>
                             </ui:fragment>
 
@@ -232,7 +232,7 @@
                                         <h:commandButton value="Delete Auction"
                                                          action="#{auctionDetailBean.adminDeleteAuction}"
                                                          styleClass="btn btn-danger btn-sm w-100"
-                                                         onclick="return confirm('Are you sure you want to delete this auction? This cannot be undone.')"/>
+                                                         onclick="return confirm('Delete this auction?')"/>
                                     </h:form>
                                 </div>
                             </ui:fragment>
@@ -265,7 +265,7 @@
                                                          value="#{auctionDetailBean.bidAmount}"
                                                          styleClass="form-control"
                                                          required="true"
-                                                         requiredMessage="Please enter a bid amount.">
+                                                         requiredMessage="Enter an amount.">
                                                 <f:attribute name="minimumBid" value="#{auctionDetailBean.minimumBid}"/>
                                                 <f:validator validatorId="minBidValidator"/>
                                             </h:inputText>
@@ -282,8 +282,8 @@
                                     <h6><i class="bi bi-robot"></i> Auto-Bid (Proxy Bidding)</h6>
                                     <ui:fragment rendered="#{auctionDetailBean.existingAutoBid == null or not auctionDetailBean.existingAutoBid.active}">
                                         <p class="small text-muted">
-                                            Enter your maximum and the system will bid for you
-                                            (only as much as needed) when someone outbids you.
+                                            Set the max you want to pay and it bids for you
+                                            when someone outbids you.
                                         </p>
                                         <h:form id="autoBidForm">
                                             <div class="input-group mb-2">
@@ -291,7 +291,7 @@
                                                 <h:inputText value="#{auctionDetailBean.autoBidMax}"
                                                              styleClass="form-control"
                                                              required="true"
-                                                             requiredMessage="Please enter a maximum amount."
+                                                             requiredMessage="Enter a max amount."
                                                              p:placeholder="Maximum amount"/>
                                             </div>
                                             <h:commandButton value="Set Auto-Bid"
@@ -324,7 +324,7 @@
 
                             <ui:fragment rendered="#{navigationBean.loggedIn and not auctionDetailBean.seller}">
                                 <h:form styleClass="mt-3">
-                                    <h:commandButton value="#{auctionDetailBean.watching ? '❤ Watching' : '♡ Watch'}"
+                                    <h:commandButton value="#{auctionDetailBean.watching ? 'Unwatch' : 'Watch'}"
                                                      action="#{auctionDetailBean.toggleWatchlist}"
                                                      styleClass="btn #{auctionDetailBean.watching ? 'btn-danger' : 'btn-outline-danger'} w-100"/>
                                 </h:form>

@@ -66,12 +66,11 @@ public class MyAuctionsBean implements Serializable {
     }
 
     public void cancelAuction(Long auctionId) {
-        errorMessage = null;
-        successMessage = null;
+        clearMessages();
         try {
             auctionService.cancelAuction(auctionId,
                     navigationBean.getLoggedInUser().getId());
-            successMessage = "Auction cancelled successfully.";
+            successMessage = "Auction cancelled.";
             loadAuctions();
         } catch (IllegalStateException | IllegalArgumentException e) {
             errorMessage = e.getMessage();
@@ -79,11 +78,10 @@ public class MyAuctionsBean implements Serializable {
     }
 
     public void suspendAuction(Long auctionId) {
-        errorMessage = null;
-        successMessage = null;
+        clearMessages();
         try {
             auctionService.suspendAuction(auctionId, navigationBean.getUserId(), null);
-            successMessage = "Auction suspended. Nobody can bid until you resume it.";
+            successMessage = "Suspended. Nobody can bid until you resume it.";
         } catch (IllegalStateException | IllegalArgumentException | SecurityException e) {
             errorMessage = e.getMessage();
         }
@@ -91,8 +89,7 @@ public class MyAuctionsBean implements Serializable {
     }
 
     public void resumeAuction(Long auctionId) {
-        errorMessage = null;
-        successMessage = null;
+        clearMessages();
         try {
             auctionService.resumeAuction(auctionId, navigationBean.getUserId());
             successMessage = "Auction resumed.";
@@ -100,6 +97,11 @@ public class MyAuctionsBean implements Serializable {
             errorMessage = e.getMessage();
         }
         loadAuctions();
+    }
+
+    private void clearMessages() {
+        errorMessage = null;
+        successMessage = null;
     }
 
     public void exportCsv() {

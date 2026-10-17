@@ -24,7 +24,7 @@ public class EmailFormatValidator implements Validator<String> {
             throw new ValidatorException(new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
                     "Invalid email format",
-                    "Please enter a valid email address (e.g. user@example.com)."));
+                    "Not a valid email address."));
         }
     }
 }

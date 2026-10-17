@@ -50,7 +50,7 @@ public class AuctionDetailBean implements Serializable {
 
     public void loadAuction() {
         if (auctionId == null) {
-            errorMessage = "No auction ID specified.";
+            errorMessage = "No auction id in the url.";
             return;
         }
 
@@ -77,7 +77,7 @@ public class AuctionDetailBean implements Serializable {
         successMessage = null;
 
         if (!navigationBean.isLoggedIn()) {
-            errorMessage = "You must be logged in to place a bid.";
+            errorMessage = "Log in to bid.";
             return;
         }
 
@@ -89,7 +89,7 @@ public class AuctionDetailBean implements Serializable {
         } catch (IllegalArgumentException | IllegalStateException e) {
             errorMessage = e.getMessage();
         } catch (Exception e) {
-            errorMessage = "Your bid could not be placed. Please try again.";
+            errorMessage = "Something went wrong, bid wasn't placed.";
         }
     }
 
@@ -98,7 +98,7 @@ public class AuctionDetailBean implements Serializable {
         successMessage = null;
 
         if (!navigationBean.isLoggedIn()) {
-            errorMessage = "You must be logged in to set an auto-bid.";
+            errorMessage = "Log in first.";
             return;
         }
 
@@ -110,7 +110,7 @@ public class AuctionDetailBean implements Serializable {
         } catch (IllegalArgumentException e) {
             errorMessage = e.getMessage();
         } catch (Exception e) {
-            errorMessage = "Your auto-bid could not be set. Please try again.";
+            errorMessage = "Couldn't set the auto-bid.";
         }
     }
 

@@ -71,14 +71,14 @@ public class AuctionService {
         Auction auction = auctionDao.findById(auctionId);
         if (auction == null) throw new IllegalArgumentException("Auction not found.");
         if (!auction.getSeller().getId().equals(userId)) {
-            throw new IllegalStateException("Only the seller can cancel an auction.");
+            throw new IllegalStateException("Not your auction.");
         }
         if (auction.getStatus() != AuctionStatus.ACTIVE) {
-            throw new IllegalStateException("Only active auctions can be cancelled.");
+            throw new IllegalStateException("Auction isn't active.");
         }
 
         if (bidDao.countByAuction(auctionId) > 0) {
-            throw new IllegalStateException("Cannot cancel an auction that already has bids.");
+            throw new IllegalStateException("Can't cancel, it already has bids.");
         }
 
         auction.setStatus(AuctionStatus.CANCELLED);
@@ -87,11 +87,11 @@ public class AuctionService {
 
     public void deleteAuction(Long auctionId, String callerId) {
         User caller = userDao.findById(callerId);
-        if (caller == null) throw new SecurityException("Authentication required.");
+        if (caller == null) throw new SecurityException("Not logged in.");
         Auction auction = auctionDao.findById(auctionId);
         if (auction == null) return;
         if (!isAdmin(caller) && !isSeller(auction, caller)) {
-            throw new SecurityException("Only the auction owner or an administrator can delete this auction.");
+            throw new SecurityException("You can't delete this auction.");
         }
         auctionDao.delete(auction);
     }
@@ -102,10 +102,10 @@ public class AuctionService {
         User caller = userDao.findById(callerId);
         boolean isAdmin = isAdmin(caller);
         if (!isAdmin && !isSeller(auction, caller)) {
-            throw new SecurityException("Only the seller or an administrator can suspend this auction.");
+            throw new SecurityException("You can't suspend this auction.");
         }
         if (auction.getStatus() != AuctionStatus.ACTIVE) {
-            throw new IllegalStateException("Only active auctions can be suspended.");
+            throw new IllegalStateException("Only active auctions can be suspended");
         }
 
         auction.setStatus(AuctionStatus.SUSPENDED);
@@ -120,16 +120,16 @@ public class AuctionService {
         User caller = userDao.findById(callerId);
         boolean isAdmin = isAdmin(caller);
         if (!isAdmin && !isSeller(auction, caller)) {
-            throw new SecurityException("Only the seller or an administrator can resume this auction.");
+            throw new SecurityException("You can't resume this auction.");
         }
         if (auction.getStatus() != AuctionStatus.SUSPENDED) {
-            throw new IllegalStateException("Only suspended auctions can be resumed.");
+            throw new IllegalStateException("Auction isn't suspended.");
         }
         if (auction.getSeller().isBlocked()) {
-            throw new IllegalStateException("Cannot resume auction: seller account is blocked.");
+            throw new IllegalStateException("Seller is blocked, can't resume.");
         }
         if (!isAdmin && auction.getSuspendedBy() != SuspendedBy.SELLER) {
-            throw new SecurityException("Auction was suspended by an administrator.");
+            throw new SecurityException("An admin suspended this auction.");
         }
 
         auction.setStatus(AuctionStatus.ACTIVE);

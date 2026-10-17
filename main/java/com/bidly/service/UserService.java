@@ -181,7 +181,7 @@ public class UserService {
     private void requireAdmin(String callerId) {
         User caller = userDao.findById(callerId);
         if (caller == null || caller.getRole() != UserRole.ADMIN) {
-            throw new SecurityException("This operation requires administrator privileges.");
+            throw new SecurityException("Admins only.");
         }
     }
 

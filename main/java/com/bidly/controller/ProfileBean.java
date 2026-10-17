@@ -132,14 +132,18 @@ public class ProfileBean implements Serializable {
     }
 
     public String suspendAuction(Long auctionId) {
-        errorMessage = null;
         successMessage = null;
+        boolean ok = false;
         try {
             auctionService.suspendAuction(auctionId, navigationBean.getUserId(), suspendReasons.get(auctionId));
             suspendReasons.clear();
-            successMessage = "Auction suspended.";
+            ok = true;
         } catch (IllegalArgumentException | IllegalStateException | SecurityException e) {
             errorMessage = e.getMessage();
+        }
+        if (ok) {
+            errorMessage = null;
+            successMessage = "Auction suspended.";
         }
         loadProfile();
         return null;
@@ -151,7 +155,9 @@ public class ProfileBean implements Serializable {
         try {
             auctionService.resumeAuction(auctionId, navigationBean.getUserId());
             successMessage = "Auction resumed.";
-        } catch (IllegalArgumentException | IllegalStateException | SecurityException e) {
+        } catch (SecurityException e) {
+            errorMessage = e.getMessage();
+        } catch (IllegalStateException | IllegalArgumentException e) {
             errorMessage = e.getMessage();
         }
         loadProfile();
@@ -164,7 +170,7 @@ public class ProfileBean implements Serializable {
 
         try {
             userService.updateProfile(profileUser.getId(), firstName, lastName, email);
-            successMessage = "Profile updated successfully.";
+            successMessage = "Profile saved.";
             editMode = false;
             loadProfile();
         } catch (IllegalArgumentException e) {
@@ -183,7 +189,7 @@ public class ProfileBean implements Serializable {
 
         try {
             userService.changePassword(profileUser.getId(), oldPassword, newPassword);
-            successMessage = "Password changed successfully.";
+            successMessage = "Password changed.";
             oldPassword = null;
             newPassword = null;
             confirmNewPassword = null;
