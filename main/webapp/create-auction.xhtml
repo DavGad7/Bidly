@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="jakarta.faces.passthrough">
+
+<ui:composition template="/templates/layout.xhtml">
+
+    <ui:define name="title">Create Auction - Bidly</ui:define>
+
+    <ui:define name="content">
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="mb-4">New Auction</h3>
+
+                        <ui:fragment rendered="#{createAuctionBean.errorMessage != null}">
+                            <div class="alert alert-danger">
+                                #{createAuctionBean.errorMessage}
+                            </div>
+                        </ui:fragment>
+
+                        <h:form id="auctionForm" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label class="form-label">Title *</label>
+                                <h:inputText value="#{createAuctionBean.title}"
+                                             styleClass="form-control"
+                                             maxlength="200"
+                                             required="true"
+                                             requiredMessage="Title is required."
+                                             p:placeholder="e.g. iPhone 13, good condition"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Description *</label>
+                                <h:inputTextarea value="#{createAuctionBean.description}"
+                                                 styleClass="form-control"
+                                                 rows="5"
+                                                 maxlength="4000"
+                                                 required="true"
+                                                 requiredMessage="Description is required."
+                                                 p:placeholder="condition, what's included, etc."/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Category *</label>
+                                <h:selectOneMenu value="#{createAuctionBean.categoryId}"
+                                                 styleClass="form-select"
+                                                 required="true"
+                                                 requiredMessage="Please select a category.">
+                                    <f:selectItem itemLabel="-- Select Category --" itemValue=""
+                                                  noSelectionOption="true"/>
+                                    <f:selectItems value="#{createAuctionBean.categories}"
+                                                   var="cat"
+                                                   itemLabel="#{cat.name}"
+                                                   itemValue="#{cat.id}"/>
+                                </h:selectOneMenu>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Start Price ($) *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <h:inputText value="#{createAuctionBean.startPrice}"
+                                                     styleClass="form-control"
+                                                     required="true"
+                                                     requiredMessage="Start price is required."
+                                                     p:placeholder="0.00"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Buy Now Price ($) <span class="text-muted">(optional)</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <h:inputText value="#{createAuctionBean.buyNowPrice}"
+                                                     styleClass="form-control"
+                                                     p:placeholder="0.00"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Contact Info <span class="text-muted">(optional)</span></label>
+                                <h:inputText value="#{createAuctionBean.contactInfo}"
+                                             styleClass="form-control"
+                                             maxlength="500"
+                                             p:placeholder="e.g. Phone: 050-1234567 or WhatsApp"/>
+                                <div class="form-text">Only the winner sees this.</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">End Date</label>
+                                    <h:inputText value="#{createAuctionBean.endDateStr}"
+                                                 type="date"
+                                                 styleClass="form-control"/>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">End Time</label>
+                                    <h:inputText value="#{createAuctionBean.endTimeStr}"
+                                                 type="time"
+                                                 styleClass="form-control"/>
+                                </div>
+                            </div>
+                            <p class="text-muted small mb-3">
+                                If no end date is specified, the auction will run for
+                                #{createAuctionBean.durationDays} days.
+                            </p>
+
+                            <div class="mb-3">
+                                <label class="form-label">Photos (up to 10, max 5 MB each)</label>
+                                <h:inputFile id="photoInput" value="#{createAuctionBean.photos}" multiple="true"
+                                             accept="image/*" styleClass="form-control"
+                                             onchange="listPhotos(this)"/>
+                                <div id="photoList" class="small mt-2"></div>
+                                <h:inputHidden id="primaryIndex" value="#{createAuctionBean.primaryPhotoIndex}"/>
+                            </div>
+
+                            <h:messages styleClass="text-danger small" globalOnly="false"/>
+
+                            <h:commandButton value="Create Auction"
+                                             action="#{createAuctionBean.createAuction}"
+                                             styleClass="btn btn-success btn-lg w-100"/>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        //<![CDATA[
+        // list the file names so you can choose the main photo
+        function listPhotos(input) {
+            var list = document.getElementById('photoList');
+            list.innerHTML = '';
+            var files = input.files;
+            if (files.length > 10) {
+                alert('You can upload up to 10 photos.');
+                input.value = '';
+                return;
+            }
+            if (files.length > 0) {
+                list.appendChild(document.createTextNode('Main photo:'));
+            }
+            for (var i = 0; i < files.length; i++) {
+                if (files[i].size > 5 * 1024 * 1024) {
+                    alert(files[i].name + ' is bigger than 5 MB.');
+                    input.value = '';
+                    list.innerHTML = '';
+                    return;
+                }
+                var label = document.createElement('label');
+                label.className = 'd-block';
+                var radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'mainPhoto';
+                radio.value = i;
+                radio.checked = (i == 0);
+                radio.onclick = function() { setMainPhoto(this.value); };
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(' ' + files[i].name));
+                list.appendChild(label);
+            }
+            setMainPhoto(0);
+        }
+
+        function setMainPhoto(i) {
+            // JSF adds the form id to the name
+            document.querySelector('input[name$="primaryIndex"]').value = i;
+        }
+        //]]>
+        </script>
+    </ui:define>
+
+</ui:composition>
+
+</html>

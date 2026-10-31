@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<ui:composition template="/templates/layout.xhtml">
+
+    <ui:define name="title">Notifications - Bidly</ui:define>
+
+    <ui:define name="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Notifications</h3>
+            <h:form rendered="#{not empty notificationBean.notifications}">
+                <h:commandButton value="Mark All as Read"
+                                 action="#{notificationBean.markAllAsRead}"
+                                 styleClass="btn btn-outline-primary btn-sm"/>
+            </h:form>
+        </div>
+
+        <ui:fragment rendered="#{not empty notificationBean.notifications}">
+            <div class="list-group">
+                <ui:repeat value="#{notificationBean.notifications}" var="notif">
+                    <div class="list-group-item notification-item #{notif.readStatus ? 'notification-read' : 'notification-unread'}">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3 fs-4">
+                                <i class="bi #{notif.iconClass}"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-1 #{notif.readStatus ? '' : 'fw-bold'}">
+                                        #{notif.title}
+                                    </h6>
+                                    <small class="text-muted"><h:outputText value="#{notif.createdAt}"><f:convertDateTime type="localDateTime" pattern="dd/MM HH:mm"/></h:outputText></small>
+                                </div>
+                                <p class="mb-1 text-muted small">#{notif.message}</p>
+                                <div class="d-flex gap-2">
+                                    <ui:fragment rendered="#{notif.relatedAuctionId != null}">
+                                        <h:link outcome="/auction"
+                                                styleClass="btn btn-sm btn-outline-primary">
+                                            <f:param name="id" value="#{notif.relatedAuctionId}"/>
+                                            View Auction
+                                        </h:link>
+                                    </ui:fragment>
+                                    <ui:fragment rendered="#{not notif.readStatus}">
+                                        <h:form>
+                                            <h:commandButton value="Mark Read"
+                                                             action="#{notificationBean.markAsRead(notif.id)}"
+                                                             styleClass="btn btn-sm btn-outline-secondary"/>
+                                        </h:form>
+                                    </ui:fragment>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ui:repeat>
+            </div>
+        </ui:fragment>
+
+        <ui:fragment rendered="#{empty notificationBean.notifications}">
+            <p class="text-muted">No notifications.</p>
+        </ui:fragment>
+    </ui:define>
+
+</ui:composition>
+
+</html>

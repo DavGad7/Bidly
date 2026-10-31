@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+                                 https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="BidlyPU" transaction-type="JTA">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <jta-data-source>java:app/jdbc/BidlyDS</jta-data-source>
+
+        <class>com.bidly.model.User</class>
+        <class>com.bidly.model.Category</class>
+        <class>com.bidly.model.Auction</class>
+        <class>com.bidly.model.AuctionPhoto</class>
+        <class>com.bidly.model.Bid</class>
+        <class>com.bidly.model.AutoBid</class>
+        <class>com.bidly.model.Notification</class>
+        <class>com.bidly.model.BidIncrement</class>
+        <class>com.bidly.model.WatchlistEntry</class>
+
+        <properties>
+            <!-- same login as in web.xml, glassfish fails without it ("No password credential found") -->
+            <property name="jakarta.persistence.jdbc.user" value="sa"/>
+            <property name="jakarta.persistence.jdbc.password" value=""/>
+            <!-- create = only adds missing tables -->
+            <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+            <property name="eclipselink.logging.level" value="FINE"/>
+            <property name="eclipselink.target-database"
+                      value="org.eclipse.persistence.platform.database.H2Platform"/>
+        </properties>
+    </persistence-unit>
+</persistence>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<ui:composition template="/templates/layout.xhtml">
+
+    <ui:define name="title">My Bids - Bidly</ui:define>
+
+    <ui:define name="content">
+        <h3 class="mb-4">My Bids</h3>
+
+        <ui:fragment rendered="#{not empty myBidsBean.bids}">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Auction</th>
+                            <th>My Bid</th>
+                            <th>Current Price</th>
+                            <th>Bid Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ui:repeat value="#{myBidsBean.bids}" var="bid">
+                            <tr>
+                                <td>
+                                    <h:link outcome="/auction" value="#{bid.auction.title}">
+                                        <f:param name="id" value="#{bid.auction.id}"/>
+                                    </h:link>
+                                </td>
+                                <td class="fw-bold">$#{bid.amount}</td>
+                                <td class="price-current">$#{bid.auction.currentPrice}</td>
+                                <td class="small text-muted"><h:outputText value="#{bid.bidTime}"><f:convertDateTime type="localDateTime" pattern="MMM d, yyyy h:mm a"/></h:outputText></td>
+                                <td>
+                                    <span class="#{myBidsBean.getBidStatusClass(bid)}">
+                                        #{myBidsBean.getBidStatus(bid)}
+                                    </span>
+                                </td>
+                            </tr>
+                        </ui:repeat>
+                    </tbody>
+                </table>
+            </div>
+        </ui:fragment>
+
+        <ui:fragment rendered="#{empty myBidsBean.bids}">
+            <p class="text-muted">
+                You haven't placed any bids yet.
+                <h:link outcome="/index">Browse auctions</h:link>
+            </p>
+        </ui:fragment>
+    </ui:define>
+
+</ui:composition>
+
+</html>

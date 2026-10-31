@@ -1,0 +1,266 @@
+body {
+    font-size: 1rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+    color: #183153;
+}
+
+main {
+    flex: 1;
+    position: relative;
+}
+
+.card {
+    border-radius: 0.5rem;
+}
+
+/* Navbar */
+.bidly-navbar {
+    min-height: 76px;
+    background-color: #183153;
+    border-bottom: 2px solid #f28b52;
+}
+
+.bidly-navbar .nav-link {
+    color: #ddd;
+    font-weight: 600;
+}
+
+.bidly-navbar .nav-link:hover {
+    color: white;
+}
+
+.btn {
+    font-weight: 600;
+}
+
+/* Auction cards (home page) */
+.auction-card {
+    overflow: hidden;
+}
+
+.auction-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.auction-card .card-title a:hover {
+    color: #f28b52;
+}
+
+.price-current {
+    color: #f28b52;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.price-large {
+    color: #f28b52;
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+
+.badge-active {
+    background-color: #2d9b78 !important;
+}
+
+.bidly-footer {
+    background: #183153;
+    color: #d7eeee;
+    padding: 1.25rem 0;
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.footer-brand p {
+    font-weight: 600;
+}
+
+.navbar-brand {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+}
+
+.brand-logo {
+    width: 112px;
+    height: 62px;
+    object-fit: contain;
+}
+
+.notification-badge {
+    position: relative;
+    top: -8px;
+    font-size: 0.65rem;
+}
+
+.auction-card .card-img-top,
+.auction-card .placeholder-img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.auction-card .placeholder-img {
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #adb5bd;
+    font-size: 3rem;
+}
+
+.auction-card .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.auction-card .card-title a {
+    color: #183153;
+    text-decoration: none;
+}
+
+.time-remaining {
+    font-weight: 700;
+    color: #607086;
+}
+
+/* auction page gallery */
+.gallery-main {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+.gallery-thumbnails {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.gallery-thumb {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.gallery-thumb:hover,
+.gallery-thumb.active {
+    border-color: #f28b52;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #607086;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.price-buynow {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.badge-closed {
+    background-color: #6c757d !important;
+}
+
+.badge-cancelled {
+    background-color: #dc3545 !important;
+}
+
+/* notifications page */
+.notification-item {
+    border-left: 4px solid transparent;
+}
+
+.notification-unread {
+    background-color: #e7f4ff;
+    border-left-color: #2474c6;
+}
+
+.notification-read {
+    background-color: #ffffff;
+    border-left-color: transparent;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.stat-card .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2474c6;
+}
+
+.stat-card .stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #2474c6;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.avatar-circle-large {
+    width: 80px;
+    height: 80px;
+    font-size: 1.5rem;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.footer-logo {
+    width: 60px;
+    height: 38px;
+    object-fit: contain;
+}
+
+/* Phones - smaller images */
+@media (max-width: 768px) {
+    .auction-card .card-img-top,
+    .auction-card .placeholder-img {
+        height: 160px;
+    }
+
+    .gallery-main {
+        max-height: 280px;
+    }
+
+    .price-large {
+        font-size: 1.4rem;
+    }
+}

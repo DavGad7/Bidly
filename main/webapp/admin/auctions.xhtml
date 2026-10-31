@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="jakarta.faces.passthrough">
+
+<ui:composition template="/templates/layout.xhtml">
+
+    <ui:define name="title">Auction Management - Bidly</ui:define>
+
+    <ui:define name="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Auction Management</h3>
+            <h:link outcome="/admin/dashboard" styleClass="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </h:link>
+        </div>
+
+        <ui:fragment rendered="#{adminBean.errorMessage != null}">
+            <div class="alert alert-danger">#{adminBean.errorMessage}</div>
+        </ui:fragment>
+        <ui:fragment rendered="#{adminBean.successMessage != null}">
+            <div class="alert alert-success">#{adminBean.successMessage}</div>
+        </ui:fragment>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <h:form id="auctionsForm" styleClass="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Seller</th>
+                                <th>Category</th>
+                                <th>Current Price</th>
+                                <th>Status</th>
+                                <th>End Time</th>
+                                <th>Views</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ui:repeat value="#{adminBean.auctions}" var="auction">
+                                <tr>
+                                    <td>#{auction.id}</td>
+                                    <td>
+                                        <h:link outcome="/auction" value="#{auction.title}"
+                                                styleClass="text-decoration-none">
+                                            <f:param name="id" value="#{auction.id}"/>
+                                        </h:link>
+                                    </td>
+                                    <td>
+                                        <h:link outcome="/profile" value="#{auction.seller.username}">
+                                            <f:param name="userId" value="#{auction.seller.id}"/>
+                                        </h:link>
+                                    </td>
+                                    <td>#{auction.category.name}</td>
+                                    <td class="fw-bold">$#{auction.currentPrice}</td>
+                                    <td>
+                                        <span class="badge #{auction.status == 'ACTIVE' ? 'badge-active' : auction.status == 'CLOSED' ? 'badge-closed' : auction.status == 'SUSPENDED' ? 'bg-warning text-dark' : 'bg-secondary'}">
+                                            #{auction.status}
+                                        </span>
+                                        <ui:fragment rendered="#{auction.status == 'SUSPENDED' and auction.suspendedBy != null}">
+                                            <div class="small text-muted">by #{auction.suspendedBy.name().toLowerCase()}</div>
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{auction.status == 'SUSPENDED' and auction.suspendReason != null}">
+                                            <div class="small fst-italic">"#{auction.suspendReason}"</div>
+                                        </ui:fragment>
+                                    </td>
+                                    <td class="small text-muted"><h:outputText value="#{auction.endTime}"><f:convertDateTime type="localDateTime" pattern="MMM d, yyyy h:mm a"/></h:outputText></td>
+                                    <td>#{auction.viewCount}</td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <h:inputText value="#{adminBean.suspendReasons[auction.id]}" rendered="#{auction.status == 'ACTIVE'}"
+                                                         styleClass="form-control form-control-sm" style="min-width: 150px"
+                                                         maxlength="500" p:placeholder="Reason (seller sees this)"/>
+                                            <h:commandButton value="Suspend" rendered="#{auction.status == 'ACTIVE'}"
+                                                             action="#{adminBean.suspendAuction(auction.id)}"
+                                                             styleClass="btn btn-outline-warning btn-sm"/>
+                                            <h:commandButton value="Resume" rendered="#{auction.status == 'SUSPENDED'}"
+                                                             action="#{adminBean.resumeAuction(auction.id)}"
+                                                             styleClass="btn btn-outline-success btn-sm"/>
+                                            <h:commandButton value="Delete"
+                                                             action="#{adminBean.deleteAuction(auction.id)}"
+                                                             styleClass="btn btn-outline-danger btn-sm"
+                                                             onclick="return confirm('Delete this auction?')"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ui:repeat>
+                        </tbody>
+                    </table>
+                </h:form>
+            </div>
+        </div>
+
+        <ui:fragment rendered="#{empty adminBean.auctions}">
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-hammer" style="font-size: 3rem;"></i>
+                <p class="mt-2">No auctions found.</p>
+            </div>
+        </ui:fragment>
+    </ui:define>
+
+</ui:composition>
+
+</html>
